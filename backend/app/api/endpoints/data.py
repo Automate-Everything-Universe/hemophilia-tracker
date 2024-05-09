@@ -1,15 +1,9 @@
 import numpy as np
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 
-from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
-from typing import List
-
-from ...dependencies import get_db
-from ...schemas import FactorLevelCreate, FactorLevelDisplay
-from ...crud import create_factor_level, get_factor_levels_by_user_id
 
 router = APIRouter()
 
@@ -32,27 +26,6 @@ def calculate_factor_levels(initial_percentage, decay_constant, week_hours, refi
         return initial_percentage
 
     return [calculate_level(hour) for hour in week_hours]
-
-
-@router.post("/create", response_model=FactorLevelDisplay)
-def create_factor_entry(factor_data: FactorLevelCreate, db: Session = Depends(get_db)):
-    """
-    Create a new factor level entry for a user.
-    """
-    new_factor_level = create_factor_level(db, factor_data, factor_data.user_id)
-    return new_factor_level
-
-
-@router.get("/user/{user_id}", response_model=List[FactorLevelDisplay])
-def read_factor_levels(user_id: int, db: Session = Depends(get_db)):
-    """
-    Retrieve all factor levels for a specific user.
-    """
-    factor_levels = get_factor_levels_by_user_id(db, user_id)
-    if not factor_levels:
-        raise HTTPException(status_code=404, detail="No factor levels found for the user")
-    return factor_levels
-
 
 def get_factor_levels():
     INITIAL_PERCENTAGE = 100
