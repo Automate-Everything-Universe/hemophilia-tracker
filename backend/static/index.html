@@ -1,40 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SJ Factor Levels</title>
+    <title>Trend of Factor VIII Levels Over Time</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
-
 <body class="bg-gray-100">
-    <header class="bg-blue-500 text-white py-4">
-        <div class="container mx-auto flex justify-between items-center px-4">
-            <h1 class="text-2xl font-bold">SJ Factor Levels</h1>
-            <nav>
-                <ul class="flex space-x-4">
-                    <li><a href="#" class="hover:underline">Home</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <div class="container mx-auto py-8 px-4">
-        <h2 class="text-2xl font-bold mb-4">Factor VIII Level</h2>
-        <div id="factorLevelChart" class="mb-8"></div>
-        <p class="text-gray-600 mb-4">This interactive graph displays the current Factor VIII level.</p>
-        <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Login</button>
+<header class="bg-blue-500 text-white py-4">
+    <div class="container mx-auto flex justify-between items-center px-4">
+        <h1 class="text-2xl font-bold">SJ's Factor VIII Weekly Tracking</h1>
+        <nav>
+            <ul class="flex space-x-4">
+                <li><a href="#" class="hover:underline">Home</a></li>
+            </ul>
+        </nav>
     </div>
+</header>
 
-    <footer class="bg-gray-900 text-white py-4">
-        <div class="container mx-auto text-center">
-            <p>&copy; 2024 SJ Factor Levels. All rights reserved.</p>
+
+<div class="container mx-auto py-8 px-4">
+    <h2 class="text-2xl font-bold mb-4">Factor VIII Level</h2>
+
+    <div id="factorLevelChart" class="mb-8"></div>
+
+    <h2 class="text-gray-600 mb-4">Update the factors to see new predictions.</h2>
+
+    <div class="space-y-4">
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="text-lg font-semibold mb-2">Context for the Factor VIII plot</h3>
+            <p class="text-gray-700 mb-3">
+                After an infusion, SJ's peak Factor VIII levels reach up to 60%. <br>
+                This maximum level is observed
+                immediately post-infusion and is essential for understanding the efficacy of the treatment. <br>
+                After 30 hours another blood test was made at which point the Factor VIII level was at 15%. <br>
+                As observed, due to the halving property of the Factor VIII protein, the level decreases significantly.
+                <br>
+                These data points help illustrate the trajectory of Factor VIII degradation over time.
+            </p>
         </div>
-    </footer>
+    </div>
+    <br>
+    <div class="space-y-4">
+        <div class="p-4 shadow rounded bg-white">
+            <label for="initial_percentage" class="block text-sm font-medium text-gray-700">Peak Factor VIII Level After
+                Infusion (%)</label>
+            <input type="number" id="initial_percentage" name="initial_percentage"
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
+            <small>Enter the highest percentage of Factor VIII level achieved immediately following the
+                infusion.</small>
+        </div>
+        <div class="p-4 shadow rounded bg-white">
+            <label for="decay_time" class="block text-sm font-medium text-gray-700">Time Elapsed Until Factor Level
+                Measurement (hours)</label>
+            <input type="number" id="decay_time" name="decay_time"
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
+            <small>Specify the number of hours from infusion to when the blood sample was collected.</small>
+        </div>
+        <div class="p-4 shadow rounded bg-white">
+            <label for="decay_rate" class="block text-sm font-medium text-gray-700">Factor VIII Level at Time of
+                Measurement (%)</label>
+            <input type="number" id="decay_rate" name="decay_rate"
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
+            <small>Input the percentage of Factor VIII level recorded at the specified time post-infusion.</small>
+        </div>
+        <div class="p-4 shadow rounded bg-white">
+            <label for="current_level" class="block text-sm font-medium text-gray-700">Date and Time for Current Factor
+                Level</label>
+            <input type="text" id="current_level" name="current_level"
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
+            <small>Select the date and time to display the current Factor VIII level on the graph.</small>
+        </div>
+        <div class="p-4 shadow rounded bg-white">
+            <label for="refill_times" class="block text-sm font-medium text-gray-700">Scheduled Weekly Infusion
+                Times</label>
+            <input type="text" id="refill_times" name="refill_times"
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
+            <small>List specific times during the week when infusions are administered.</small>
+        </div>
+        <button id="updateButton" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded shadow">Update
+            Factor Levels
+        </button>
+    </div>
+</div>
 
-    <script src="/static/app.js"></script>
+<footer class="bg-gray-900 text-white py-4">
+    <div class="container mx-auto text-center">
+        <p>&copy; 2024 <a href="https://automate-everything-company.com">Automate Everything Company</a></p>
+
+    </div>
+</footer>
+
+<script src="/static/app.js"></script>
 </body>
-
 </html>
