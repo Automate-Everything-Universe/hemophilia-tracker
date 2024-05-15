@@ -1,11 +1,13 @@
 from typing import List
 
-from fastapi import FastAPI, APIRouter, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, APIRouter
 from pydantic import BaseModel, Field
-from datetime import datetime, timedelta, time
+from datetime import datetime, timedelta
+import pytz
 
 import numpy as np
+
+CET = pytz.timezone('Europe/Berlin')
 
 app = FastAPI()
 
@@ -34,7 +36,7 @@ router = APIRouter()
 
 def convert_to_datetime(date_str):
     # Current date details
-    now = datetime.now()
+    now = datetime.now(CET)
     current_year = now.year
     current_month = now.month
 
@@ -58,7 +60,7 @@ def convert_to_datetime(date_str):
     # Ensure the datetime object matches the correct day, keeping time and AM/PM
     final_datetime = datetime_obj.replace(day=correct_date.day)
 
-    return final_datetime
+    return CET.localize(final_datetime)
 
 def parse_refill_time(time_str: str, start_of_week: datetime) -> datetime:
     weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
@@ -98,8 +100,9 @@ async def get_factor_levels(settings: FactorLevelSettings) -> dict:
     WEEK_DURATION = 24 * 7  # hours in a week
     HOUR_INCR = 0.1  # time step in hours
 
-    start_of_week = datetime.combine(datetime.now().date() - timedelta(days=datetime.now().date().weekday()),
-                                     datetime.min.time())
+    start_of_week = CET.localize(
+        datetime.combine(datetime.now(CET).date() - timedelta(days=datetime.now(CET).date().weekday()),
+                         datetime.min.time()))
     decay_constant = calculate_decay_constant(settings.decay_rate, settings.decay_time)
     refill_hours = generate_refill_hours(settings.refill_times, start_of_week)
 
@@ -124,8 +127,9 @@ async def get_factor_levels(settings: FactorLevelSettings) -> dict:
 
 @router.get("/default-values", response_model=DefaultValues)
 async def get_default_values():
+    current_time_cet = datetime.now(CET).strftime('%A %I:%M %p')
     return DefaultValues(
-        current_level=datetime.now().strftime('%A %I:%M %p')
+        current_level=current_time_cet
     )
 
 
