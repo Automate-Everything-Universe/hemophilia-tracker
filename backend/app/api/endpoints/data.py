@@ -14,7 +14,7 @@ class DefaultValues(BaseModel):
     initial_percentage: float = 60
     decay_time: float = 30
     decay_rate: float = 15
-    current_level: str = datetime.now().strftime('%A %I:%M %p')
+    current_level: str
     refill_times: list[str] = ["Monday 07:30 AM", "Wednesday 07:30 AM", "Friday 07:30 AM"]
 
 
@@ -124,7 +124,9 @@ async def get_factor_levels(settings: FactorLevelSettings) -> dict:
 
 @router.get("/default-values", response_model=DefaultValues)
 async def get_default_values():
-    return DefaultValues()
+    return DefaultValues(
+        current_level=datetime.now().strftime('%A %I:%M %p')
+    )
 
 
 app.include_router(router)
