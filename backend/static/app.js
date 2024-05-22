@@ -11,7 +11,7 @@ function fetchDefaultValues() {
             document.getElementById('decay_time').value = data.decay_time;
             document.getElementById('decay_rate').value = data.decay_rate;
             document.getElementById('current_level').value = data.current_level;
-            document.getElementById('refill_times').value = data.refill_times.join(', ');
+            setInitialDates(data.refill_times); // Use setInitialDates from date_selection.js
             updateFactorLevels(); // Initial chart plot with default values
         })
         .catch(error => console.error('Error fetching default data:', error));
@@ -23,9 +23,7 @@ function updateFactorLevels() {
     const decayTime = document.getElementById('decay_time').value;
     const decayRate = document.getElementById('decay_rate').value;
     const currentLevel = document.getElementById('current_level').value;
-    const refillTimesInput = document.getElementById('refill_times').value;
-
-    const refillTimes = refillTimesInput.split(',').map(s => s.trim());
+    const refillTimes = getRefillTimes();
 
     fetch('data/update-factor-levels', {
         method: 'POST',
