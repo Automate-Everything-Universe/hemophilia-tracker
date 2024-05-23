@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function () {
         enableTime: true,
         dateFormat: "l h:i K", // Monday 03:30 PM
         weekNumbers: true,
-        minDate: "today",
         time_24hr: false
     });
 });
