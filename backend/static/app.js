@@ -43,7 +43,7 @@ function plotFactorLevelChart(data) {
         x: hours,
         y: data.levels,
         mode: 'lines',
-        name: 'Factor VIII Level Over Time',
+        name: 'Factor Level Over Time',
         marker: { color: 'rgb(75, 192, 192)' }
     };
 
@@ -77,7 +77,7 @@ function plotFactorLevelChart(data) {
             ticktext: []  // Array to store tick labels
         },
         yaxis: {
-            title: 'Factor VIII (%)',
+            title: 'Factor Level (%)',
             range: [0, yAxisUpperLimit], // Dynamic setting based on data
             hoverformat: '.2f' // Set hover format to display two decimal places
         }
