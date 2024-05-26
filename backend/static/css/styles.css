@@ -1,0 +1,17 @@
+#factorLevelDoughnutChart {
+    max-width: 400px;
+    max-height: 400px;
+    width: 100%;
+    height: auto;
+    margin: 0 auto; /* Center align the chart horizontally */
+    display: block; /* Ensure the margin auto works on the canvas */
+}
+
+#demoChart {
+  max-width: 400px;
+  max-height: 400px;
+  width: 100%;
+  height: auto;
+  margin: 0 auto; /* Center align the chart horizontally */
+  display: block; /* Ensure the margin auto works on the canvas */
+}
