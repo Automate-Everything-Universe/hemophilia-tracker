@@ -122,7 +122,7 @@ function createDoughnutChart(data) {
             ctx.textAlign = "center";
             ctx.fillStyle = "black"; // Ensure text color is set to black
 
-            const text = factorLevelYValue.toFixed(1),
+            const text = `${factorLevelYValue.toFixed(1)}%`,
                 textX = width / 2,
                 textY = height / 2;
 
