@@ -1,6 +1,19 @@
 document.addEventListener('DOMContentLoaded', function () {
     fetchDefaultValues();
+
     document.getElementById('updateButton').addEventListener('click', updateFactorLevels);
+    const datetimePickerBtn = document.getElementById('datetimePicker');
+
+    const addDateTimeBtn = document.getElementById('addDateTime');
+    console.log('addDateTimeBtn:', addDateTimeBtn); // Debugging
+
+    if (datetimePickerBtn && addDateTimeBtn) {
+        datetimePickerBtn.addEventListener('click', function() {
+            addDateTimeBtn.classList.remove('hidden');
+        });
+    } else {
+        console.error('Buttons not found'); // Debugging
+    }
 });
 
 function fetchDefaultValues() {
@@ -10,9 +23,8 @@ function fetchDefaultValues() {
             document.getElementById('initial_percentage').value = data.initial_percentage;
             document.getElementById('decay_time').value = data.decay_time;
             document.getElementById('decay_rate').value = data.decay_rate;
-            document.getElementById('current_level').value = data.current_level;
-            setInitialDates(data.refill_times); // Use setInitialDates from date_selection.js
-            updateFactorLevels(); // Initial chart plot with default values
+            setInitialDates(data.refill_times);
+            updateFactorLevels();
         })
         .catch(error => console.error('Error fetching default data:', error));
 }
@@ -22,13 +34,17 @@ function updateFactorLevels() {
     const initialPercentage = document.getElementById('initial_percentage').value;
     const decayTime = document.getElementById('decay_time').value;
     const decayRate = document.getElementById('decay_rate').value;
-    const currentLevel = document.getElementById('current_level').value;
     const refillTimes = getRefillTimes();
+
+    const localTime = new Date();
+    const currentLevel = localTime.toLocaleString('en-US', {
+        weekday: 'long', hour: '2-digit', minute: '2-digit', hour12: true
+    });
 
     fetch('data/update-factor-levels', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ initialPercentage, decayTime, decayRate, currentLevel, refillTimes })
+        body: JSON.stringify({ initialPercentage, decayTime, decayRate, refillTimes, currentLevel })
     })
     .then(response => response.json())
     .then(data => {
@@ -37,6 +53,7 @@ function updateFactorLevels() {
     })
     .catch(error => console.error('Error updating data:', error));
 }
+
 
 function plotFactorLevelChart(data) {
     const hours = data.hours.map(hour => new Date(new Date(data.start_of_week).getTime() + hour * 3600000));
@@ -54,7 +71,6 @@ function plotFactorLevelChart(data) {
 
     const factorLevelDate = new Date(data.start_of_week);
     factorLevelDate.setTime(factorLevelDate.getTime() + factorLevelXValue * 3600000);
-
 
     const factorLevelTrace = {
         x: [factorLevelDate],
@@ -96,6 +112,7 @@ function plotFactorLevelChart(data) {
 
     Plotly.newPlot('factorLevelChart', [trace, factorLevelTrace], layout, {responsive: true});
 }
+
 const ctx = document.getElementById('factorLevelDoughnutChart').getContext('2d');
 let doughnutChart;
 
