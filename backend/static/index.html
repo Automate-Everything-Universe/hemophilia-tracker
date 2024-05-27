@@ -54,11 +54,13 @@
     <div class="bg-white shadow rounded-lg p-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="space-y-4">
+                <h3 class="text-lg font-semibold mb-2">User Data</h3>
                 <div class="p-4 shadow rounded bg-white">
                     <label for="initial_percentage" class="block text-sm font-medium text-gray-700">Peak Factor Level
                         After Infusion (%)</label>
                     <input type="number" id="initial_percentage" name="initial_percentage"
-                           class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
+                           class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded inline-flex items-center">
+                    <br>
                     <small class="text-gray-600">Enter the highest percentage of Factor level achieved immediately
                         following the infusion.</small>
                 </div>
@@ -66,7 +68,8 @@
                     <label for="decay_time" class="block text-sm font-medium text-gray-700">Time Elapsed Until Factor
                         Level Measurement (hours)</label>
                     <input type="number" id="decay_time" name="decay_time"
-                           class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
+                           class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded inline-flex items-center">
+                    <br>
                     <small class="text-gray-600">Specify the number of hours from infusion to when the blood sample was
                         collected.</small>
                 </div>
@@ -74,23 +77,15 @@
                     <label for="decay_rate" class="block text-sm font-medium text-gray-700">Factor Level at Time of
                         Measurement (%)</label>
                     <input type="number" id="decay_rate" name="decay_rate"
-                           class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
+                           class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded inline-flex items-center">
+                    <br>
                     <small class="text-gray-600">Input the percentage of Factor level recorded at the specified time
                         post-infusion.</small>
                 </div>
 
             </div>
             <div class="space-y-4">
-                <div class="p-4 shadow rounded bg-white">
-
-                    <label for="current_level" class="block text-sm font-medium text-gray-700">Date and Time for Current
-                        Factor Level</label>
-                    <input type="text" id="current_level" name="current_level"
-                           class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded inline-flex items-center"
-                           readonly>
-                    <br>
-                    <small class="text-gray-600">Current date.</small>
-                </div>
+                <h3 class="text-lg font-semibold mb-2">Weekly Schedule</h3>
                 <div class="p-4 shadow rounded bg-white">
                     <label for="current_level" class="block text-sm font-medium text-gray-700">Scheduled Weekly Infusion
                         Times</label>
@@ -113,8 +108,9 @@
                     <small class="text-gray-600">Select a date and time for a new infusion event and add to the
                         list.</small>
                     <br>
-                    <button onclick="addDateTime()"
-                            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-2 rounded shadow">Add Time
+                    <button id="addDateTime" onclick="addDateTime()"
+                            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-2 rounded shadow hidden">Add
+                        Time
                     </button>
                 </div>
             </div>

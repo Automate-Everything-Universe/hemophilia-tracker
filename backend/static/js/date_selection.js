@@ -17,6 +17,11 @@ function addDateTime() {
         updateDateList();
         datetimePicker._flatpickr.clear();
     }
+
+    const addDateTimeBtn = document.getElementById('addDateTime');
+    if (addDateTimeBtn) {
+        addDateTimeBtn.classList.add('hidden');
+    }
 }
 
 function updateDateList() {

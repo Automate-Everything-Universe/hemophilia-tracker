@@ -16,16 +16,15 @@ class DefaultValues(BaseModel):
     initial_percentage: float = 60
     decay_time: float = 30
     decay_rate: float = 15
-    current_level: str
-    refill_times: list[str] = ["Monday 10:30 AM", "Wednesday 07:30 AM", "Friday 07:30 AM"]
+    refill_times: list[str] = ["Monday 07:30 AM", "Wednesday 07:30 AM", "Friday 07:30 AM"]
 
 
 class FactorLevelSettings(BaseModel):
     initial_percentage: float = Field(..., alias='initialPercentage')
     decay_time: float = Field(..., alias='decayTime')
     decay_rate: float = Field(..., alias='decayRate')
-    current_level: str = Field(..., alias='currentLevel')
     refill_times: List[str] = Field(..., alias='refillTimes')
+    current_level: str = Field(..., alias='currentLevel')  # Add currentLevel field
 
     class Config:
         allow_population_by_field_name = True
@@ -61,6 +60,7 @@ def convert_to_datetime(date_str):
     final_datetime = datetime_obj.replace(day=correct_date.day)
 
     return CET.localize(final_datetime)
+
 
 def parse_refill_time(time_str: str, start_of_week: datetime) -> datetime:
     weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
@@ -127,10 +127,7 @@ async def get_factor_levels(settings: FactorLevelSettings) -> dict:
 
 @router.get("/default-values", response_model=DefaultValues)
 async def get_default_values():
-    current_time_cet = datetime.now(CET).strftime('%A %I:%M %p')
-    return DefaultValues(
-        current_level=current_time_cet
-    )
+    return DefaultValues()
 
 
 app.include_router(router)
