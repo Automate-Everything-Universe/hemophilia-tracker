@@ -33,7 +33,7 @@ function updateFactorLevels() {
     .then(response => response.json())
     .then(data => {
         plotFactorLevelChart(data);
-        createDoughnutChart(data);
+        createOrUpdateDoughnutChart(data);
     })
     .catch(error => console.error('Error updating data:', error));
 }
@@ -99,16 +99,13 @@ function plotFactorLevelChart(data) {
 const ctx = document.getElementById('factorLevelDoughnutChart').getContext('2d');
 let doughnutChart;
 
-function createDoughnutChart(data) {
-    if (doughnutChart) {
-        doughnutChart.destroy();
-    }
-
+function createOrUpdateDoughnutChart(data) {
     const currentFactorLevel = data.current_factor_level;
     const factorLevelYValue = currentFactorLevel[1];
-    const color = factorLevelYValue >= 40 ? 'rgb(119, 255, 0)' : factorLevelYValue >= 5 ? 'rgb(255, 205, 86)' : 'rgb(255, 99, 132)';
+    const color = factorLevelYValue >= 40 ? 'rgb(34,139,34)' : factorLevelYValue >= 5 ? 'rgb(255, 205, 86)' : 'rgb(255, 99, 132)';
+    const textValue = `${factorLevelYValue.toFixed(0)}%`;
 
-    Chart.register({
+    const customTextPlugin = {
         id: 'customTextPlugin',
         beforeDraw: function(chart) {
             const width = chart.width,
@@ -116,38 +113,53 @@ function createDoughnutChart(data) {
                 ctx = chart.ctx;
 
             ctx.restore();
-            const fontSize = (height / 4).toFixed(2);
+            const fontSize = (height / 5).toFixed(2);
             ctx.font = fontSize + "px sans-serif";
             ctx.textBaseline = "middle";
             ctx.textAlign = "center";
-            ctx.fillStyle = "black"; // Ensure text color is set to black
+            ctx.fillStyle = doughnutChart.options.plugins.customTextPlugin.color;
 
-            const text = `${factorLevelYValue.toFixed(1)}%`,
+            const text = chart.config.options.plugins.customTextPlugin.text,
                 textX = width / 2,
                 textY = height / 2;
 
+            ctx.clearRect(0, 0, width, height); // Clear previous text
             ctx.fillText(text, textX, textY);
             ctx.save();
         }
-    });
+    };
 
-    doughnutChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            datasets: [{
-                data: [factorLevelYValue, 100 - factorLevelYValue],
-                backgroundColor: [color, 'rgb(230, 242, 245)'],
-            }],
-            labels: ['Factor Level', 'Missing Factor']
-        },
-        options: {
-            maintainAspectRatio: true,
-            cutout: '70%',
-            rotation: 0,
-            hoverOffset: 4,
-            plugins: {
-                customTextPlugin: {} // Enable the custom text plugin
+    if (doughnutChart) {
+        // Update existing chart
+        doughnutChart.data.datasets[0].data = [factorLevelYValue, 100 - factorLevelYValue];
+        doughnutChart.data.datasets[0].backgroundColor = [color, 'rgb(230, 242, 245)'];
+        doughnutChart.options.plugins.customTextPlugin.text = textValue;
+        doughnutChart.options.plugins.customTextPlugin.color = color;
+        doughnutChart.update();
+    } else {
+        // Create new chart
+        Chart.register(customTextPlugin);
+
+        doughnutChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [factorLevelYValue, 100 - factorLevelYValue],
+                    backgroundColor: [color, 'rgb(230, 242, 245)'],
+                }],
+                labels: ['Factor Level', 'Missing Factor']
+            },
+            options: {
+                maintainAspectRatio: true,
+                cutout: '70%',
+                rotation: 0,
+                hoverOffset: 4,
+                plugins: {
+                    customTextPlugin: {
+                        text: textValue // Set initial text
+                    }
+                }
             }
-        }
-    });
+        });
+    }
 }
