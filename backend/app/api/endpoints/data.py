@@ -27,7 +27,7 @@ class FactorLevelSettings(BaseModel):
     current_level: str = Field(..., alias='currentLevel')  # Add currentLevel field
 
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
 
 
 router = APIRouter()

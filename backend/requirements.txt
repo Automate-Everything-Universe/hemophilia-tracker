@@ -4,3 +4,8 @@ passlib
 uvicorn
 numpy
 pytz
+jinja2
+pymysql
+cryptography
+python-multipart
+bcrypt

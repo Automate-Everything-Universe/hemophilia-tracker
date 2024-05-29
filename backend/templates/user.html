@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container mx-auto py-8 px-4">
+    <h2 class="text-2xl font-bold mb-4">User Information</h2>
+    <div class="bg-white shadow rounded-lg p-6">
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>First Name:</strong> {{ user.first_name }}</p>
+        <p><strong>Last Name:</strong> {{ user.last_name }}</p>
+        <p><strong>Peak Level:</strong> {{ user.peak_level }}</p>
+        <p><strong>Time Elapsed:</strong> {{ user.time_elapsed }}</p>
+        <p><strong>Second Level Measurement:</strong> {{ user.second_level_measurement }}</p>
+        <p><strong>Weekly Infusions:</strong> {{ user.weekly_infusions }}</p>
+    </div>
+</div>
+{% endblock %}
