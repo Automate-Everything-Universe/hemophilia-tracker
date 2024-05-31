@@ -16,7 +16,7 @@ class DefaultValues(BaseModel):
     initial_percentage: float = 60
     decay_time: float = 30
     decay_rate: float = 15
-    refill_times: list[str] = ["Monday 07:30 AM", "Wednesday 07:30 AM", "Friday 07:30 AM"]
+    refill_times: list[str] = ["Monday 07:30 AM", "Wednesday 01:30 PM", "Friday 07:30 AM"]
 
 
 class FactorLevelSettings(BaseModel):
