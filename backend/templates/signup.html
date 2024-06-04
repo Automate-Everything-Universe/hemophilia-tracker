@@ -1,87 +1,132 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<h2 class="text-2xl font-bold mb-4">Signup</h2>
-<form id="signupForm" action="/signup" method="POST">
-    <div class="mb-4">
-        <label for="first_name" class="block text-sm font-medium text-gray-700">First name</label>
-        <input type="text" id="first_name" name="first_name"
-               class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
-    </div>
-    <div class="mb-4">
-        <label for="last_name" class="block text-sm font-medium text-gray-700">Last name</label>
-        <input type="text" id="last_name" name="last_name"
-               class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
-    </div>
-    <div class="mb-4">
-        <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-        <input type="text" id="username" name="username" autocomplete="username"
-               class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
-    </div>
-    <div class="mb-4">
-        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-        <input type="password" id="password" name="password" autocomplete="current-password"
-               class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
-    </div>
-    <div class="mb-4">
-        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-        <input type="email" id="email" name="email"
-               class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
-    </div>
-    <div class="mb-4">
-        <label for="peak_level" class="block text-sm font-medium text-gray-700">Peak Factor Level After Infusion
-            (%)</label>
-        <input type="number" id="peak_level" name="peak_level" step="0.01"
-               class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
-    </div>
-    <div class="mb-4">
-        <label for="time_elapsed" class="block text-sm font-medium text-gray-700">Time Elapsed Until Factor Level
-            Measurement (hours)</label>
-        <input type="number" id="time_elapsed" name="time_elapsed" step="0.01"
-               class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
-    </div>
-    <div class="mb-4">
-        <label for="second_level_measurement" class="block text-sm font-medium text-gray-700">Factor Level at Time of
-            Measurement (%)</label>
-        <input type="number" id="second_level_measurement" name="second_level_measurement" step="0.01"
-               class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
-    </div>
-    <!-- Date selection for signup -->
-    <div class="space-y-4">
-        <h3 class="text-lg font-semibold mb-2">Weekly Schedule</h3>
-        <div class="p-4 shadow rounded bg-white">
-            <label for="datetimePickerSignup" class="block text-sm font-medium text-gray-700">Scheduled Weekly Infusion
-                Times</label>
-            <button id="datetimePickerSignup" type="button"
-                    class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded inline-flex items-center">
-                New Infusion
-            </button>
-            <div id="datesBackgroundSignup"
-                 class="mt-1 block w-full rounded-md px-4 py-2 text-left text-gray-700 bg-gray-200 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-xs">
-                <div id="selectedDatesSignup" class="flex flex-wrap space-x-2"></div>
+<div class="bg-white shadow rounded-lg p-6">
+    <h2 class="text-2xl font-bold mb-4">Signup</h2>
+    <form id="signupForm" onsubmit="submitSignupForm(event)">
+        <div class="bg-white shadow rounded-lg p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 md:grid-cols-3 gap-4">
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold mb-2">User Data</h3>
+                    <div class="p-4 shadow rounded bg-white">
+                        <label for="first_name" class="block text-sm font-medium text-gray-700">First name</label>
+                        <input type="text" id="first_name" name="first_name"
+                               class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
+                    </div>
+                    <div class="p-4 shadow rounded bg-white">
+                        <label for="last_name" class="block text-sm font-medium text-gray-700">Last name</label>
+                        <input type="text" id="last_name" name="last_name"
+                               class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
+                    </div>
+                    <div class="p-4 shadow rounded bg-white">
+                        <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                        <input type="text" id="username" name="username" autocomplete="username"
+                               class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
+                        <br>
+                        <small class="text-gray-600">Username to log in with.</small>
+                    </div>
+                    <div class="p-4 shadow rounded bg-white">
+                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <input type="password" id="password" name="password" autocomplete="current-password"
+                               class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
+                    </div>
+                    <div class="p-4 shadow rounded bg-white">
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input type="email" id="email" name="email"
+                               class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
+                        <br>
+                        <small class="text-gray-600">In case we need to contact you. We will never send you any spam oder advertising.</small>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold mb-2">Measurement Data</h3>
+                    <div class="p-4 shadow rounded bg-white">
+                        <label for="peak_level" class="block text-sm font-medium text-gray-700">Peak Factor Level After
+                            Infusion
+                            (%)</label>
+                        <input type="number" id="peak_level" name="peak_level" step="0.01"
+                               class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded inline-flex items-center">
+                        <br>
+                        <small class="text-gray-600">Enter the highest percentage of Factor level achieved immediately
+                            following the infusion.</small>
+                    </div>
+                    <div class="p-4 shadow rounded bg-white">
+                        <label for="time_elapsed" class="block text-sm font-medium text-gray-700">Time Elapsed Until
+                            Factor
+                            Level
+                            Measurement (hours)</label>
+                        <input type="number" id="time_elapsed" name="time_elapsed" step="0.01"
+                               class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
+                        <br>
+                        <small class="text-gray-600">Specify the number of hours from infusion to when the blood sample
+                            was
+                            collected.</small>
+                    </div>
+                    <div class="p-4 shadow rounded bg-white">
+                        <label for="second_level_measurement" class="block text-sm font-medium text-gray-700">Factor
+                            Level
+                            at
+                            Time of
+                            Measurement (%)</label>
+                        <input type="number" id="second_level_measurement" name="second_level_measurement" step="0.01"
+                               class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
+                        <br>
+                        <small class="text-gray-600">Input the percentage of Factor level recorded at the specified time
+                            post-infusion.</small>
+                    </div>
+                </div>
+
+                <!-- Date selection for signup -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold mb-2">Weekly Schedule</h3>
+                    <div class="p-4 shadow rounded bg-white">
+                        <label for="datetimePickerSignup" class="block text-sm font-medium text-gray-700">Scheduled
+                            Weekly
+                            Infusion
+                            Times</label>
+                        <div id="datesBackgroundSignup"
+                             class="mt-1 block w-full rounded-md px-4 py-2 text-left text-gray-700 bg-gray-200 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-xs">
+                            <div id="selectedDatesSignup" class="flex flex-wrap space-x-2"></div>
+                        </div>
+                        <br>
+                        <small class="text-gray-600">Weekly infusion events.</small>
+                    </div>
+                    <br>
+                    <div class="p-4 shadow rounded bg-white">
+                        <label for="datetimePickerSignup" class="block text-sm font-medium text-gray-700">Add Infusions
+                            Event</label>
+                        <input id="datetimePickerSignup" type="text"
+                               class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded inline-flex items-center"
+                               data-container-id="selectedDatesSignup"
+                               data-selected-dates="signupDates"
+                               placeholder="New event">
+                        <br>
+                        <small class="text-gray-600">Select a date and time for a new infusion event and add to the
+                            list.</small>
+                        <br>
+                        <button id="addDateTimeSignup" type="button" onclick="addDateTimeSignup()"
+                                class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-2 rounded shadow hidden">
+                            Add
+                            Time
+                        </button>
+                    </div>
+                </div>
             </div>
-            <small class="text-gray-600">Past or future infusion events</small>
             <br>
-            <button id="addDateTimeSignup" type="button" onclick="addDateTimeSignup()"
-                    class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-2 rounded shadow hidden">Add Time
+            <button type="submit" id="submitSignup" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                Signup
             </button>
+            <br>
+            <small class="text-gray-600">Sign up and save login data.</small>
+            <br>
         </div>
-        <br>
-    </div>
-    <button id="submitSignup" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Sign Up</button>
-</form>
-<script>
-    document.getElementById('submitSignup').addEventListener('click', function(event) {
-        event.preventDefault();
-        document.getElementById('signupForm').submit();
-    });
 
-    // Ensuring the button type remains as button after flatpickr initialization
-    document.addEventListener('DOMContentLoaded', function() {
-        const dateTimePickerSignup = document.getElementById('datetimePickerSignup');
-        dateTimePickerSignup.setAttribute('type', 'button');
-    });
+    </form>
 
-</script>
+</div>
+
+</div>
+
+
 <script src="/static/js/signup_date_selection.js"></script>
 {% endblock %}

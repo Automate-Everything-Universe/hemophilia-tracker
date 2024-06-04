@@ -1,10 +1,13 @@
 from pathlib import Path
 
-from fastapi import FastAPI, Depends, HTTPException, Request, Form
+from fastapi import FastAPI, Depends, HTTPException, Form, APIRouter
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.templating import Jinja2Templates
+
+from starlette.requests import Request
+from starlette.responses import JSONResponse
 
 from sqlalchemy.orm import Session
 from sqlalchemy import text
@@ -14,6 +17,7 @@ from passlib.context import CryptContext
 from .api.router import router as api_router
 from . import models, schemas, crud
 from .database import SessionLocal, engine
+from .schemas import UserSignup
 
 STATIC_PATH = Path(__file__).parents[1] / 'static'
 TEMPLATES_PATH = Path(__file__).parents[1] / 'templates'
@@ -33,6 +37,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+router = APIRouter()
+
 templates = Jinja2Templates(directory=str(TEMPLATES_PATH))
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -44,6 +50,14 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.detail},
+    )
 
 
 @app.get("/test-db-connection")
@@ -89,30 +103,8 @@ def get_signup_form(request: Request):
 
 
 @app.post("/signup")
-def signup(
-        username: str = Form(...),
-        password: str = Form(...),
-        email: str = Form(None),
-        first_name: str = Form(""),
-        last_name: str = Form(""),
-        peak_level: float = Form(None),
-        time_elapsed: float = Form(None),
-        second_level_measurement: float = Form(None),
-        weekly_infusions: str = Form(None),
-        db: Session = Depends(get_db)
-):
+def signup(user: UserSignup, db: Session = Depends(get_db)):
     try:
-        user = schemas.UserCreate(
-            username=username,
-            password=password,
-            email=email,
-            first_name=first_name,
-            last_name=last_name,
-            peak_level=peak_level,
-            time_elapsed=time_elapsed,
-            second_level_measurement=second_level_measurement,
-            weekly_infusions=weekly_infusions,
-        )
         db_user = crud.get_user_by_username(db, username=user.username)
         if db_user:
             raise HTTPException(status_code=400, detail="Username already registered")
@@ -120,7 +112,20 @@ def signup(
             db_user = crud.get_user_by_email(db, email=user.email)
             if db_user:
                 raise HTTPException(status_code=400, detail="Email already registered")
-        crud.create_user(db=db, user=user)
+
+        user.weekly_infusions = ", ".join(user.weekly_infusions)
+        new_user = schemas.UserCreate(
+            username=user.username,
+            password=user.password,
+            email=user.email,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            peak_level=user.peak_level,
+            time_elapsed=user.time_elapsed,
+            second_level_measurement=user.second_level_measurement,
+            weekly_infusions=user.weekly_infusions,
+        )
+        crud.create_user(db=db, user=new_user)
         return RedirectResponse(url="/", status_code=303)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -161,3 +166,6 @@ def delete_user_by_email(email: str, db: Session = Depends(get_db)):
 @app.get("/", response_class=HTMLResponse)
 def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
+
+
+app.include_router(router)
