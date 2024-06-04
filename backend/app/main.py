@@ -15,14 +15,13 @@ from sqlalchemy import text
 from passlib.context import CryptContext
 
 from .api.router import router as api_router
-from . import models, schemas, crud
-from .database import SessionLocal, engine
+from . import schemas, crud
 from .schemas import UserSignup
+from .dependencies import get_db
 
 STATIC_PATH = Path(__file__).parents[1] / 'static'
 TEMPLATES_PATH = Path(__file__).parents[1] / 'templates'
 
-models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Hemophilia Tracker", version="0.0.1")
 
@@ -42,15 +41,6 @@ router = APIRouter()
 templates = Jinja2Templates(directory=str(TEMPLATES_PATH))
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):

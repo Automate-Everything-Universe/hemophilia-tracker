@@ -1,11 +1,16 @@
 from typing import List
-
-from fastapi import FastAPI, APIRouter
-from pydantic import BaseModel, Field
 from datetime import datetime, timedelta
-import pytz
+
+from fastapi import FastAPI, APIRouter, Depends, HTTPException
+from pydantic import BaseModel, Field
+
+from sqlalchemy.orm import Session
 
 import numpy as np
+import pytz
+
+from ... import schemas, crud
+from ...dependencies import get_db
 
 CET = pytz.timezone('Europe/Berlin')
 
@@ -125,9 +130,30 @@ async def get_factor_levels(settings: FactorLevelSettings) -> dict:
     }
 
 
+# @router.get("/default-values", response_model=DefaultValues)
+# async def get_default_values():
+#     return DefaultValues()
+#
+
 @router.get("/default-values", response_model=DefaultValues)
-async def get_default_values():
-    return DefaultValues()
+async def get_default_values(db: Session = Depends(get_db)):
+    username = "stefanjosan"
+    user_defaults = crud.get_user_default_values(db, username)
+    if user_defaults:
+        default_values = DefaultValues()
+        default_values.initial_percentage = user_defaults.peak_level
+        default_values.decay_time = user_defaults.time_elapsed
+        default_values.decay_rate = user_defaults.second_level_measurement
+        default_values.refill_times = user_defaults.weekly_infusions
+        return default_values
+    raise HTTPException(status_code=404, detail="User not found")
+
+
+class DefaultValues(BaseModel):
+    initial_percentage: float = 60
+    decay_time: float = 30
+    decay_rate: float = 15
+    refill_times: list[str] = ["Monday 07:30 AM", "Wednesday 01:30 PM", "Friday 07:30 AM"]
 
 
 app.include_router(router)
