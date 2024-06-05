@@ -22,7 +22,6 @@ from .dependencies import get_db
 STATIC_PATH = Path(__file__).parents[1] / 'static'
 TEMPLATES_PATH = Path(__file__).parents[1] / 'templates'
 
-
 app = FastAPI(title="Hemophilia Tracker", version="0.0.1")
 
 app.include_router(api_router)
@@ -41,6 +40,7 @@ router = APIRouter()
 templates = Jinja2Templates(directory=str(TEMPLATES_PATH))
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
@@ -151,6 +151,14 @@ def delete_user_by_email(email: str, db: Session = Depends(get_db)):
     if not success:
         raise HTTPException(status_code=404, detail="User not found")
     return {"detail": "User deleted"}
+
+
+@router.get("/user-data/{username}", response_model=schemas.UserPlotsData)
+async def get_user_data(username: str, db: Session = Depends(get_db)):
+    user_data = crud.get_user_plot_data(db, username)
+    if user_data:
+        return user_data
+    raise HTTPException(status_code=404, detail="User not found")
 
 
 @app.get("/", response_class=HTMLResponse)

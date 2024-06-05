@@ -44,3 +44,14 @@ class User(UserBase):
 
     class Config:
         from_attributes = True
+
+
+class UserPlotsData(BaseModel):
+    initial_percentage: float = Field(..., alias='initialPercentage')
+    decay_time: float = Field(..., alias='decayTime')
+    decay_rate: float = Field(..., alias='decayRate')
+    refill_times: List[str] = Field(..., alias='refillTimes')
+    current_level: str = Field(..., alias='currentTime')
+
+    class Config:
+        populate_by_name = True

@@ -77,3 +77,17 @@ def delete_user_by_email(db: Session, email: str):
         db.commit()
         return True
     return False
+
+
+def get_user_plot_data(db: Session, username: str) -> schemas.UserPlotsData:
+    db_user = get_user_by_username(db, username)
+    if db_user:
+        weekly_infusions_list = db_user.weekly_infusions.split(", ") if db_user.weekly_infusions else []
+        return schemas.UserPlotsData(
+            initialPercentage=db_user.peak_level,
+            decayTime=db_user.time_elapsed,
+            decayRate=db_user.second_level_measurement,
+            refillTimes=weekly_infusions_list,
+            currentTime=""  # This needs to be set based on your logic
+        )
+    return None
