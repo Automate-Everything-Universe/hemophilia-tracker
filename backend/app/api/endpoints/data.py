@@ -11,17 +11,11 @@ import pytz
 
 from ... import schemas, crud
 from ...dependencies import get_db
+from ...schemas import DefaultValues
 
 CET = pytz.timezone('Europe/Berlin')
 
 app = FastAPI()
-
-
-class DefaultValues(BaseModel):
-    initial_percentage: float = 60
-    decay_time: float = 30
-    decay_rate: float = 15
-    refill_times: list[str] = ["Monday 07:30 AM", "Wednesday 01:30 PM", "Friday 07:30 AM"]
 
 
 class FactorLevelSettings(BaseModel):
@@ -130,11 +124,6 @@ async def get_factor_levels(settings: FactorLevelSettings) -> dict:
     }
 
 
-# @router.get("/default-values", response_model=DefaultValues)
-# async def get_default_values():
-#     return DefaultValues()
-#
-
 @router.get("/default-values", response_model=DefaultValues)
 async def get_default_values(db: Session = Depends(get_db)):
     username = "stefanjosan"
@@ -147,13 +136,5 @@ async def get_default_values(db: Session = Depends(get_db)):
         default_values.refill_times = user_defaults.weekly_infusions
         return default_values
     raise HTTPException(status_code=404, detail="User not found")
-
-
-class DefaultValues(BaseModel):
-    initial_percentage: float = 60
-    decay_time: float = 30
-    decay_rate: float = 15
-    refill_times: list[str] = ["Monday 07:30 AM", "Wednesday 01:30 PM", "Friday 07:30 AM"]
-
 
 app.include_router(router)

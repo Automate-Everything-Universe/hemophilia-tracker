@@ -2,6 +2,13 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 
 
+class DefaultValues(BaseModel):
+    initial_percentage: Optional[float] = Field(None)
+    decay_time: Optional[float] = Field(None)
+    decay_rate: Optional[float] = Field(None)
+    refill_times: Optional[list[str]] = Field(None)
+
+
 class UserSignup(BaseModel):
     first_name: Optional[str] = Field(None, alias='firstName')
     last_name: Optional[str] = Field(None, alias='lastName')
