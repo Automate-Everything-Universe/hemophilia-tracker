@@ -1,29 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trend of Factor Levels Over Time</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="/static/css/styles.css">
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body class="bg-gray-100">
-<header class="bg-blue-500 text-white py-4">
-    <div class="container mx-auto flex justify-between items-center px-4">
-        <h1 class="text-2xl font-bold">Hemophilia-Tracker</h1>
-        <h4 class="font-bold">This product is made to inform and not to be used as medical advice.</h4>
-        <nav>
-            <ul class="flex space-x-4">
-                <li><a href="#" class="hover:underline">Home</a></li>
-            </ul>
-        </nav>
-    </div>
-</header>
+{% extends "layout.html" %}
 
+{% block content %}
+<body class="bg-gray-100">
 <div class="container mx-auto py-8 px-4">
     <h2 class="text-2xl font-bold mb-4">Factor Level</h2>
     <div class="bg-white shadow rounded-lg p-6">
@@ -98,11 +76,11 @@
                 <br>
 
                 <div class="p-4 shadow rounded bg-white">
-                    <label for="datetimePicker" class="block text-sm font-medium text-gray-700">Add Infusions
+                    <label for="datetimepicker" class="block text-sm font-medium text-gray-700">Add Infusions
                         Event</label>
                     <button id="datetimePicker"
                             class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded inline-flex items-center">
-                        New Infusion
+                        New event
                     </button>
                     <br>
                     <small class="text-gray-600">Select a date and time for a new infusion event and add to the
@@ -120,13 +98,8 @@
         </button>
     </div>
 </div>
-
-<footer class="bg-gray-900 text-white py-4">
-    <div class="container mx-auto text-center">
-        <p>Created by <a href="https://automate-everything-company.com">Automate Everything Company</a></p>
-    </div>
-</footer>
+</body>
+<script src="/static/js/plot_functions.js"></script>
 <script src="/static/js/date_selection.js"></script>
 <script src="/static/js/app.js"></script>
-</body>
-</html>
+{% endblock %}

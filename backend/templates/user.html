@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container mx-auto py-8 px-4">
+    <h2 class="text-2xl font-bold mb-4">User Information</h2>
+    <div class="bg-white shadow rounded-lg p-6">
+        <p><strong>Username:</strong> <span id="username">{{ user.username }}</span></p>
+        <p><strong>Email:</strong> <span id="email">{{ user.email }}</span></p>
+        <p><strong>First Name:</strong> <span id="first_name">{{ user.first_name }}</span></p>
+        <p><strong>Last Name:</strong> <span id="last_name">{{ user.last_name }}</span></p>
+        <p><strong>Peak Level:</strong> <span id="peak_level">{{ user.peak_level }}</span></p>
+        <p><strong>Time Elapsed:</strong> <span id="time_elapsed">{{ user.time_elapsed }}</span></p>
+        <p><strong>Second Level Measurement:</strong> <span id="second_level_measurement">{{ user.second_level_measurement }}</span>
+        </p>
+        <p><strong>Weekly Infusions:</strong> <span id="weekly_infusions">{{ user.weekly_infusions }}</span></p>
+    </div>
+</div>
+<div class="container mx-auto py-8 px-4">
+    <div class="bg-white shadow rounded-lg p-6">
+        <h3 class="text-lg font-semibold mb-2">Current factor level</h3>
+        <canvas id="factorLevelDoughnutChart"></canvas>
+    </div>
+</div>
+<br>
+<div class="container mx-auto py-8 px-4">
+    <div id="factorLevelChart" class="space-y-4 shadow rounded bg-white"></div>
+</div>
+<script src="/static/js/plot_functions.js"></script>
+<script src="/static/js/user_plots.js"></script>
+
+{% endblock %}
+

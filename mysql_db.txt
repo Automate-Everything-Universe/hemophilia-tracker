@@ -1,0 +1,20 @@
+CREATE DATABASE hem_tracker;
+
+USE hem_tracker;
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(255),
+    peak_level FLOAT(5,2),
+    time_elapsed FLOAT(5,2),
+    second_level_measurement FLOAT(5,2),
+    weekly_infusions VARCHAR(1000)
+);
+
+CREATE USER 'dragos'@'localhost' IDENTIFIED BY '0000';
+
+GRANT ALL PRIVILEGES ON your_database.hem_tracker TO 'dragos'@'localhost';
+GRANT ALL PRIVILEGES ON hem_tracker.* TO 'dragos'@'localhost';
+FLUSH PRIVILEGES;
