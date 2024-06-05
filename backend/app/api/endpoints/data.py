@@ -23,7 +23,7 @@ class FactorLevelSettings(BaseModel):
     decay_time: float = Field(..., alias='decayTime')
     decay_rate: float = Field(..., alias='decayRate')
     refill_times: List[str] = Field(..., alias='refillTimes')
-    current_level: str = Field(..., alias='currentLevel')  # Add currentLevel field
+    current_level: str = Field(..., alias='currentTime')  # Add currentTime field
 
     class Config:
         populate_by_name = True

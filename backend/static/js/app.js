@@ -37,14 +37,14 @@ function updateFactorLevels() {
     const refillTimes = getRefillTimes();
 
     const localTime = new Date();
-    const currentLevel = localTime.toLocaleString('en-US', {
+    const currentTime = localTime.toLocaleString('en-US', {
         weekday: 'long', hour: '2-digit', minute: '2-digit', hour12: true
     });
 
     fetch('data/update-factor-levels', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ initialPercentage, decayTime, decayRate, refillTimes, currentLevel })
+        body: JSON.stringify({ initialPercentage, decayTime, decayRate, refillTimes, currentTime })
     })
     .then(response => response.json())
     .then(data => {
