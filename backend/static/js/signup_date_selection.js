@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 let signupDates = [];
 
-window.addDateTimeSignup = function () {
+function addDateTimeSignup() {
     const datetimePicker = document.getElementById('datetimePickerSignup');
     if (datetimePicker.value) {
         signupDates.push(datetimePicker.value);
@@ -37,7 +37,9 @@ window.addDateTimeSignup = function () {
     if (addDateTimeBtn) {
         addDateTimeBtn.classList.add('hidden');
     }
-};
+}
+
+window.addDateTimeSignup = addDateTimeSignup;
 
 function updateSignupDateList() {
     const selectedDatesDiv = document.getElementById('selectedDatesSignup');
@@ -100,37 +102,33 @@ function submitSignupForm(event) {
         weekly_infusions: getSignupRefillTimes()
     };
 
-        fetch('/signup', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify(signupData)
-        })
-          .then(response => {
-            if (!response.ok) {
-              return response.json().then(error => {
-                            alert(`Signup failed: ${error.detail}`);
-                // Handle the error response from the server
-                throw new Error(`Signup failed: ${error.detail}`);
-              });
-            }
-            alert('Data was saved.');
-            return response.json();
-          })
-          .then(data => {
-             alert('Signup successful');
-            console.log('Signup successful:', data);
-            window.location.href = '/';
-          })
-          .catch(error => {
-            console.error('Error during signup:', error);
-            return response.json().then(errorData => {
-              // Handle the error response from the server
-              console.error('Error details:', errorData.detail);
-              // Display the error message to the user or take appropriate action
-            });
+    fetch('/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(signupData)
+    })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(error => {
+            alert(`Signup failed: ${error.detail}`);
+            // Handle the error response from the server
+            throw new Error(`Signup failed: ${error.detail}`);
           });
-  }
-document.getElementById('signupForm').onsubmit = submitSignupForm;
+        }
+        return response.json();
+      })
+      .then(data => {
+        alert('Account created');
+        console.log('Signup successful:', data);
+        window.location.href = '/login'; // Redirect to the login page
+      })
+      .catch(error => {
+        console.error('Error during signup:', error);
+      });
+      }
+
+// document.getElementById('signupForm').onsubmit = submitSignupForm;
+window.submitSignupForm = submitSignupForm;

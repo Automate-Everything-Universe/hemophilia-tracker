@@ -116,7 +116,7 @@ def signup(user: UserSignup, db: Session = Depends(get_db)):
             weekly_infusions=user.weekly_infusions,
         )
         crud.create_user(db=db, user=new_user)
-        return RedirectResponse(url="/", status_code=303)
+        return {"detail": "Signup successful"}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 

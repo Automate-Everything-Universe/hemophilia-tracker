@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="bg-white shadow rounded-lg p-6">
-    <h2 class="text-2xl font-bold mb-4">Signup</h2>
+    <h2 class="text-2xl font-bold mb-4">Sign up</h2>
     <form id="signupForm" onsubmit="submitSignupForm(event)">
         <div class="bg-white shadow rounded-lg p-6">
             <div class="grid grid-cols-1 md:grid-cols-2 md:grid-cols-3 gap-4">
@@ -35,11 +35,15 @@
                         <input type="email" id="email" name="email"
                                class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
                         <br>
-                        <small class="text-gray-600">In case we need to contact you. We will never send you any spam oder advertising.</small>
+                        <small class="text-gray-600">In case we need to contact you. We will never send you any spam
+                            oder advertising.</small>
                     </div>
                 </div>
                 <div class="space-y-4">
                     <h3 class="text-lg font-semibold mb-2">Measurement Data</h3>
+                    <small class="text-gray-600">
+                        The measurement data is used to calculate the prediction curve.
+                    </small>
                     <div class="p-4 shadow rounded bg-white">
                         <label for="peak_level" class="block text-sm font-medium text-gray-700">Peak Factor Level After
                             Infusion
@@ -79,6 +83,9 @@
                 <!-- Date selection for signup -->
                 <div class="space-y-4">
                     <h3 class="text-lg font-semibold mb-2">Weekly Schedule</h3>
+                    <small class="text-gray-600">
+                        The infusion events are used to increase the factor level on the curve to the peak value.
+                    </small>
                     <div class="p-4 shadow rounded bg-white">
                         <label for="datetimePickerSignup" class="block text-sm font-medium text-gray-700">Scheduled
                             Weekly
@@ -114,7 +121,7 @@
             </div>
             <br>
             <button type="submit" id="submitSignup" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
-                Signup
+                Sign up
             </button>
             <br>
             <small class="text-gray-600">Sign up and save login data.</small>
