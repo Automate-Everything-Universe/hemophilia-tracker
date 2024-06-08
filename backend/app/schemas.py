@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel, Field
 from typing import Optional, List
 
@@ -55,3 +57,28 @@ class UserPlotsData(BaseModel):
 
     class Config:
         populate_by_name = True
+
+
+class MeasurementBase(BaseModel):
+    measurement_date: Optional[str] = None
+    peak_level: Optional[float] = None
+    time_elapsed: Optional[float] = None
+    second_level_measurement: Optional[float] = None
+    decay_constant: Optional[float] = None
+    comment: Optional[str] = None
+
+
+class MeasurementCreate(MeasurementBase):
+    measurement_date: Optional[str] = None
+    peak_level: Optional[float] = None
+    time_elapsed: Optional[float] = None
+    second_level_measurement: Optional[float] = None
+    comment: Optional[str] = None
+
+
+class Measurement(MeasurementBase):
+    id: int
+    user_id: int
+
+    class Config:
+        orm_mode = True

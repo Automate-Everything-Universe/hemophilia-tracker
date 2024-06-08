@@ -1,8 +1,10 @@
 from typing import Union
 
 from sqlalchemy.orm import Session
-from . import models, schemas
 from passlib.context import CryptContext
+
+from . import models, schemas
+from .calculations import calculate_decay_constant
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -79,7 +81,7 @@ def delete_user_by_email(db: Session, email: str):
     return False
 
 
-def get_user_plot_data(db: Session, username: str) -> schemas.UserPlotsData:
+def get_user_plot_data(db: Session, username: str) -> Union[None, schemas.UserPlotsData]:
     db_user = get_user_by_username(db, username)
     if db_user:
         weekly_infusions_list = db_user.weekly_infusions.split(", ") if db_user.weekly_infusions else []
@@ -91,3 +93,21 @@ def get_user_plot_data(db: Session, username: str) -> schemas.UserPlotsData:
             currentTime=""  # This needs to be set based on your logic
         )
     return None
+
+
+def create_measurement(db: Session, measurement: schemas.MeasurementCreate, user_id: int):
+    decay_constant = calculate_decay_constant(measurement.peak_level, measurement.second_level_measurement,
+                                              measurement.time_elapsed)
+    db_measurement = models.Measurement(
+        user_id=user_id,
+        measurement_date=measurement.measurement_date,
+        peak_level=measurement.peak_level,
+        time_elapsed=measurement.time_elapsed,
+        second_level_measurement=measurement.second_level_measurement,
+        decay_constant=decay_constant,
+        comment=measurement.comment
+    )
+    db.add(db_measurement)
+    db.commit()
+    db.refresh(db_measurement)
+    return db_measurement

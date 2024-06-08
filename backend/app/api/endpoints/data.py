@@ -9,9 +9,10 @@ from sqlalchemy.orm import Session
 import numpy as np
 import pytz
 
-from ... import schemas, crud
+from ... import crud
 from ...dependencies import get_db
 from ...schemas import DefaultValues
+from ...calculations import calculate_decay_constant
 
 CET = pytz.timezone('Europe/Berlin')
 
@@ -71,8 +72,6 @@ def parse_refill_time(time_str: str, start_of_week: datetime) -> datetime:
     return day_datetime.replace(hour=time_obj.hour, minute=time_obj.minute)
 
 
-def calculate_decay_constant(decay_rate: float, decay_time: float) -> float:
-    return np.log(decay_rate / 100) / decay_time
 
 
 def generate_refill_hours(refill_times: List[str], start_of_week: datetime) -> List[float]:

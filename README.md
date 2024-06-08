@@ -48,6 +48,18 @@ CREATE TABLE users (
     last_name VARCHAR(255)
 );
 
+CREATE TABLE measurements (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    measurement_date VARCHAR(255) NOT NULL,
+    peak_level FLOAT(5,2) NOT NULL,
+    time_elapsed FLOAT(5,2) NOT NULL,
+    second_level_measurement FLOAT(5,2) NOT NULL,
+    decay_constant FLOAT(5,8) NOT NULL;
+    comment VARCHAR(255),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
 CREATE USER 'dragos'@'localhost' IDENTIFIED BY '0000';
 
 GRANT ALL PRIVILEGES ON hem_tracker.* TO 'dragos'@'localhost';
