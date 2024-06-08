@@ -15,6 +15,58 @@
         <p><strong>Weekly Infusions:</strong> <span id="weekly_infusions">{{ user.weekly_infusions }}</span></p>
     </div>
 </div>
+
+<div class="container mx-auto py-8 px-4">
+    <div class="bg-white shadow rounded-lg p-6">
+        <h3 class="text-lg font-semibold mb-2">Measurements overview</h3>
+        <small>The number of measurements increase the precision of the factor prediction. </small>
+        <div id="measurementsList"></div>
+        <div id="noMeasurementsMessage" class="hidden text-red-500 text-sm font-semibold">No measurements found. Please
+            add a measurement to enable predictions.
+        </div>
+    </div>
+</div>
+
+<br>
+<div class="container mx-auto py-8 px-4">
+    <div class="bg-white shadow rounded-lg p-6">
+        <h3 class="text-lg font-semibold mb-2">Add Measurement</h3>
+        <form id="measurementForm" onsubmit="submitMeasurementForm(event)">
+            <div class="p-4 shadow rounded bg-white">
+                <label for="measurement_date" class="block text-sm font-medium text-gray-700">Measurement Date</label>
+                <input type="datetime-local" id="measurement_date" name="measurement_date"
+                       class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
+            </div>
+            <div class="p-4 shadow rounded bg-white">
+                <label for="measurement_peak_level" class="block text-sm font-medium text-gray-700">Peak Level</label>
+                <input type="number" id="measurement_peak_level" name="measurement_peak_level" step="0.01"
+                       class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
+            </div>
+            <div class="p-4 shadow rounded bg-white">
+                <label for="measurement_time_elapsed" class="block text-sm font-medium text-gray-700">Time Elapsed
+                    (hours)</label>
+                <input type="number" id="measurement_time_elapsed" name="measurement_time_elapsed" step="0.01"
+                       class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
+            </div>
+            <div class="p-4 shadow rounded bg-white">
+                <label for="measurement_second_level_measurement" class="block text-sm font-medium text-gray-700">Second
+                    Level Measurement</label>
+                <input type="number" id="measurement_second_level_measurement"
+                       name="measurement_second_level_measurement" step="0.01"
+                       class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
+            </div>
+            <div class="p-4 shadow rounded bg-white">
+                <label for="measurement_comment" class="block text-sm font-medium text-gray-700">Comment</label>
+                <textarea id="measurement_comment" name="measurement_comment"
+                          class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded"></textarea>
+            </div>
+        </form>
+        <button id="addMeasurementBtn"
+                class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-2 rounded">Add Measurement
+        </button>
+    </div>
+</div>
+
 <div class="container mx-auto py-8 px-4">
     <div class="bg-white shadow rounded-lg p-6">
         <h3 class="text-lg font-semibold mb-2">Current factor level</h3>
@@ -25,8 +77,10 @@
 <div class="container mx-auto py-8 px-4">
     <div id="factorLevelChart" class="space-y-4 shadow rounded bg-white"></div>
 </div>
+
+<br>
+
 <script src="/static/js/plot_functions.js"></script>
+<script src="/static/js/user_measurements.js"></script>
 <script src="/static/js/user_plots.js"></script>
-
 {% endblock %}
-

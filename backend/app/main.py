@@ -1,4 +1,6 @@
+from datetime import datetime
 from pathlib import Path
+from typing import List
 
 from fastapi import FastAPI, Depends, HTTPException, Form, APIRouter
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -14,8 +16,9 @@ from sqlalchemy import text
 
 from passlib.context import CryptContext
 
+from .calculations import calculate_decay_constant
 from .api.router import router as api_router
-from . import schemas, crud
+from . import models, schemas, crud
 from .schemas import UserSignup
 from .dependencies import get_db
 
@@ -159,6 +162,59 @@ async def get_user_data(username: str, db: Session = Depends(get_db)):
     if user_data:
         return user_data
     raise HTTPException(status_code=404, detail="User not found")
+
+
+@app.get("/users/{username}/measurements/", response_model=List[schemas.Measurement])
+def read_measurements(username: str, db: Session = Depends(get_db)):
+    db_user = db.query(models.User).filter(models.User.username == username).first()
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return db_user.measurements
+
+
+@router.post("/users/{username}/measurements/", response_model=schemas.MeasurementCreate)
+def create_measurement(username: str, measurement: schemas.MeasurementCreate, db: Session = Depends(get_db)):
+    db_user = db.query(models.User).filter(models.User.username == username).first()
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    measurement_date = datetime.strptime(measurement.measurement_date, "%Y-%m-%dT%H:%M")  # Convert string to datetime
+
+    decay_constant = crud.calculate_decay_constant(measurement.second_level_measurement, measurement.time_elapsed)
+    db_measurement = models.Measurement(
+        user_id=db_user.id,
+        measurement_date=measurement_date,
+        peak_level=measurement.peak_level,
+        time_elapsed=measurement.time_elapsed,
+        second_level_measurement=measurement.second_level_measurement,
+        decay_constant=decay_constant,
+        comment=measurement.comment
+    )
+    db.add(db_measurement)
+    db.commit()
+    db.refresh(db_measurement)
+    return db_measurement
+
+
+# Redirect endpoint without trailing slash to the correct endpoint
+@app.post("/users/{username}/measurements", include_in_schema=False)
+async def redirect_measurements(username: str):
+    return RedirectResponse(url=f"/users/{username}/measurements/", status_code=307)
+
+
+@app.delete("/users/{username}/measurements/{measurement_id}", response_model=schemas.Measurement)
+def delete_measurement(username: str, measurement_id: int, db: Session = Depends(get_db)):
+    db_user = db.query(models.User).filter(models.User.username == username).first()
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    db_measurement = db.query(models.Measurement).filter(models.Measurement.id == measurement_id).first()
+    if db_measurement is None:
+        raise HTTPException(status_code=404, detail="Measurement not found")
+
+    db.delete(db_measurement)
+    db.commit()
+    return {"detail": "Measurement deleted"}
 
 
 @app.get("/", response_class=HTMLResponse)
