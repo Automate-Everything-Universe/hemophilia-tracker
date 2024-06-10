@@ -20,9 +20,9 @@ function fetchDefaultValues() {
     fetch('data/default-values')
         .then(response => response.json())
         .then(data => {
-            document.getElementById('initial_percentage').value = data.initial_percentage;
-            document.getElementById('decay_time').value = data.decay_time;
-            document.getElementById('decay_rate').value = data.decay_rate;
+            document.getElementById('initial_factor_level').value = data.initial_factor_level;
+            document.getElementById('time_elapsed_until_measurement').value = data.time_elapsed_until_measurement;
+            document.getElementById('factor_measured_level').value = data.factor_measured_level;
             setInitialDates(data.refill_times);
             updateFactorLevels();
         })
@@ -31,9 +31,9 @@ function fetchDefaultValues() {
 
 
 function updateFactorLevels() {
-    const initialPercentage = document.getElementById('initial_percentage').value;
-    const decayTime = document.getElementById('decay_time').value;
-    const decayRate = document.getElementById('decay_rate').value;
+    const initialFactorLevel = document.getElementById('initial_factor_level').value;
+    const timeElapsedUntilMeasurement = document.getElementById('time_elapsed_until_measurement').value;
+    const factorMeasuredLevel = document.getElementById('factor_measured_level').value;
     const refillTimes = getRefillTimes();
 
     const localTime = new Date();
@@ -44,7 +44,7 @@ function updateFactorLevels() {
     fetch('data/update-factor-levels', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ initialPercentage, decayTime, decayRate, refillTimes, currentTime })
+        body: JSON.stringify({ initialFactorLevel, timeElapsedUntilMeasurement, factorMeasuredLevel, refillTimes, currentTime })
     })
     .then(response => response.json())
     .then(data => {

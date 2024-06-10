@@ -5,9 +5,9 @@ from typing import Optional, List
 
 
 class DefaultValues(BaseModel):
-    initial_percentage: Optional[float] = Field(None)
-    decay_time: Optional[float] = Field(None)
-    decay_rate: Optional[float] = Field(None)
+    initial_factor_level: Optional[float] = Field(None)
+    time_elapsed_until_measurement: Optional[float] = Field(None)
+    factor_measured_level: Optional[float] = Field(None)
     refill_times: Optional[list[str]] = Field(None)
 
 
@@ -49,9 +49,9 @@ class User(UserBase):
 
 
 class UserPlotsData(BaseModel):
-    initial_percentage: float = Field(..., alias='initialPercentage')
-    decay_time: float = Field(..., alias='decayTime')
-    decay_rate: float = Field(..., alias='decayRate')
+    initial_factor_level: float = Field(..., alias='initialFactorLevel')
+    time_elapsed_until_measurement: float = Field(..., alias='timeElapsedUntilMeasurement')
+    factor_measured_level: float = Field(..., alias='factorMeasuredLevel')
     refill_times: List[str] = Field(..., alias='refillTimes')
     current_level: str = Field(..., alias='currentTime')
 
