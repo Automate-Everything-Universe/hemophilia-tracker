@@ -1,5 +1,5 @@
 import math
-from typing import List, Union
+from typing import List, Union, Tuple
 from datetime import datetime, timedelta
 from dataclasses import dataclass
 
@@ -103,7 +103,7 @@ def parse_refill_time(time_str: str, start_of_week: datetime) -> datetime:
     return day_datetime.replace(hour=time_obj.hour, minute=time_obj.minute)
 
 
-def calculate_percentage(week_hours: List[float], params: FactorCalculationParameters) -> List[float]:
+def calculate_levels(week_hours: List[float], params: FactorCalculationParameters) -> List[float]:
     refill_hours = params.refill_hours
     initial_percentage = params.initial_percentage
     decay_constant = params.decay_constant
@@ -174,26 +174,25 @@ async def get_factor_levels(settings: FactorLevelSettings) -> dict:
     week_hours = np.arange(0, hours_in_a_week, 0.1).round(2)
     week_hours = week_hours.tolist()
 
-    params = FactorCalculationParameters(
+    level_params = FactorCalculationParameters(
         refill_hours=refill_hours,
         initial_percentage=settings.initial_percentage,
         decay_constant=decay_constant,
         week_duration=hours_in_a_week
     )
 
-    levels = calculate_levels(week_hours=week_hours, updated_params=params)
+    levels = calculate_levels(week_hours=week_hours, params=level_params)
 
     current_time = convert_to_datetime(settings.current_level)
-    current_hour = [(current_time - start_of_week).total_seconds() / 3600]
-
-    current_factor_level = calculate_levels(week_hours=current_hour, updated_params=params)
+    current_hour = (current_time - start_of_week).total_seconds() / 3600
+    current_factor_level = levels[week_hours.index(int(current_hour))]
 
     return {
         "hours": week_hours,
         "start_of_week": start_of_week.isoformat(),
         "levels": levels,
         "current_time": current_time.isoformat(),
-        "current_factor_level": [current_hour[0], current_factor_level[0]]
+        "current_factor_level": [current_hour, current_factor_level]
     }
 
 
