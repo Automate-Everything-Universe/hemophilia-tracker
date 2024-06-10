@@ -103,15 +103,14 @@ def parse_refill_time(time_str: str, start_of_week: datetime) -> datetime:
     return day_datetime.replace(hour=time_obj.hour, minute=time_obj.minute)
 
 
-def calculate_levels(week_hours: List[float], updated_params: FactorCalculationParameters) -> List[float]:
-    refill_hours = updated_params.refill_hours
-    initial_percentage = updated_params.initial_percentage
-    decay_constant = updated_params.decay_constant
-    week_duration = updated_params.week_duration
-    min_percentage = updated_params.min_percentage
-    max_diff_percentage = updated_params.max_diff_percentage
+def calculate_percentage(week_hours: List[float], params: FactorCalculationParameters) -> List[float]:
+    refill_hours = params.refill_hours
+    initial_percentage = params.initial_percentage
+    decay_constant = params.decay_constant
+    week_duration = params.week_duration
 
     levels = []
+
     peak_value = initial_percentage
 
     for hour in week_hours:
@@ -155,11 +154,8 @@ def calculate_levels(week_hours: List[float], updated_params: FactorCalculationP
                 break
 
         if hour > refill_hours[-1]:
-            level_value = peak_value * np.exp(decay_constant * (hour - refill_hours[-1]))
-            if level_value < min_percentage:
-                levels.append(min_percentage)
-            else:
-                levels.append(level_value)
+            levels.append(peak_value * np.exp(decay_constant * (hour - refill_hours[-1])))
+
     return levels
 
 
