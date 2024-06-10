@@ -25,9 +25,9 @@ app = FastAPI()
 
 
 class FactorLevelSettings(BaseModel):
-    initial_level: float = Field(..., alias='initialLevel')
-    decay_time: float = Field(..., alias='decayTime')
-    decay_rate: float = Field(..., alias='decayRate')
+    initial_factor_level: float = Field(..., alias='initialFactorLevel')
+    time_elapsed_until_measurement: float = Field(..., alias='timeElapsedUntilMeasurement')
+    factor_measured_level: float = Field(..., alias='factorMeasuredLevel')
     refill_times: List[str] = Field(..., alias='refillTimes')
     current_level: str = Field(..., alias='currentTime')  # Add currentTime field
 
@@ -37,7 +37,7 @@ class FactorLevelSettings(BaseModel):
 
 @dataclass
 class FactorCalculationParameters:
-    initial_level: float
+    initial_factor_level: float
     decay_constant: float
     refill_hours: List[float]
     week_duration: int
@@ -64,8 +64,8 @@ def convert_to_datetime(date_str):
     return CET.localize(final_datetime)
 
 
-def calculate_decay_constant(initial_level: float, measured_level: float, time_elapsed: float) -> float:
-    return (np.log(measured_level) - np.log(initial_level)) / time_elapsed
+def calculate_decay_constant(initial_factor_level: float, measured_level: float, time_elapsed: float) -> float:
+    return (np.log(measured_level) - np.log(initial_factor_level)) / time_elapsed
 
 
 def generate_refill_hours(refill_times: List[str], start_of_week: datetime) -> List[float]:
@@ -104,57 +104,52 @@ def parse_refill_time(time_str: str, start_of_week: datetime) -> datetime:
 
 
 def calculate_levels(week_hours: List[float], params: FactorCalculationParameters) -> List[float]:
-    refill_hours = params.refill_hours
-    initial_percentage = params.initial_percentage
-    decay_constant = params.decay_constant
-    week_duration = params.week_duration
-
     levels = []
-
-    peak_value = initial_percentage
+    peak_value = params.initial_factor_level
 
     for hour in week_hours:
-        if not refill_hours:
+        if not params.refill_hours:
             levels.append(0.0)
             continue
 
-        if hour < refill_hours[0]:
-            previous_week_last_refill = refill_hours[-1] - week_duration
-            factor_value = initial_percentage * np.exp(decay_constant * (hour - previous_week_last_refill))
+        if hour < params.refill_hours[0]:
+            previous_week_last_refill = params.refill_hours[-1] - params.week_duration
+            factor_value = params.initial_factor_level * exp(params.decay_constant * (hour - previous_week_last_refill))
             levels.append(factor_value)
             continue
 
-        for i in range(len(refill_hours)):
-            if hour == refill_hours[i]:
+        for i in range(len(params.refill_hours)):
+            if isclose(hour, params.refill_hours[i]):
                 if i == 0:
-                    previous_week_last_refill = refill_hours[-1] - week_duration
-                    previous_hour = (hour - 0.1)
-                    previous_level_value = peak_value * np.exp(
-                        decay_constant * (previous_hour - previous_week_last_refill))
-                    level_value = initial_percentage + previous_level_value
+                    previous_week_last_refill = params.refill_hours[-1] - params.week_duration
+                    previous_hour = hour - 0.1
+                    previous_level_value = peak_value * exp(
+                        params.decay_constant * (previous_hour - previous_week_last_refill))
+                    level_value = params.initial_factor_level + previous_level_value
                     peak_value = level_value
                     levels.append(level_value)
                 else:
-                    previous_hour = (hour - 0.1)
-                    last_refill_hour = refill_hours[i - 1]
-                    previous_value = peak_value * np.exp(decay_constant * (previous_hour - last_refill_hour))
-                    level_value = initial_percentage + previous_value
-                    levels.append(level_value)
+                    previous_hour = hour - 0.1
+                    last_refill_hour = params.refill_hours[i - 1]
+                    previous_value = peak_value * exp(params.decay_constant * (previous_hour - last_refill_hour))
+                    level_value = params.initial_factor_level + previous_value
                     peak_value = level_value
+                    levels.append(level_value)
                 break
 
-            if hour < refill_hours[i]:
+            if hour < params.refill_hours[i]:
                 if i == 0:
-                    previous_week_last_refill = refill_hours[-1] - week_duration
-                    level_value = initial_percentage * np.exp(decay_constant * (hour - previous_week_last_refill))
+                    previous_week_last_refill = params.refill_hours[-1] - params.week_duration
+                    level_value = params.initial_factor_level * exp(
+                        params.decay_constant * (hour - previous_week_last_refill))
                     levels.append(level_value)
                 else:
-                    level_value = peak_value * np.exp(decay_constant * (hour - refill_hours[i - 1]))
+                    level_value = peak_value * exp(params.decay_constant * (hour - params.refill_hours[i - 1]))
                     levels.append(level_value)
                 break
 
-        if hour > refill_hours[-1]:
-            levels.append(peak_value * np.exp(decay_constant * (hour - refill_hours[-1])))
+        if hour > params.refill_hours[-1]:
+            levels.append(peak_value * exp(params.decay_constant * (hour - params.refill_hours[-1])))
 
     return levels
 
@@ -167,8 +162,8 @@ async def get_factor_levels(settings: FactorLevelSettings) -> dict:
         datetime.combine(datetime.now(CET).date() - timedelta(days=datetime.now(CET).date().weekday()),
                          datetime.min.time()))
 
-    decay_constant = calculate_decay_constant(initial_level=settings.initial_level,
-                                              measured_level=settings.decay_rate, time_elapsed=settings.decay_time)
+    decay_constant = calculate_decay_constant(initial_factor_level=settings.initial_factor_level,
+                                              measured_level=settings.factor_measured_level, time_elapsed=settings.time_elapsed_until_measurement)
 
     refill_hours = generate_refill_hours(settings.refill_times, start_of_week)
 
@@ -177,7 +172,7 @@ async def get_factor_levels(settings: FactorLevelSettings) -> dict:
 
     level_params = FactorCalculationParameters(
         refill_hours=refill_hours,
-        initial_level=settings.initial_level,
+        initial_factor_level=settings.initial_factor_level,
         decay_constant=decay_constant,
         week_duration=hours_in_a_week
     )
@@ -186,7 +181,8 @@ async def get_factor_levels(settings: FactorLevelSettings) -> dict:
 
     current_time = convert_to_datetime(settings.current_level)
     current_hour = (current_time - start_of_week).total_seconds() / 3600
-    current_factor_level = levels[week_hours.index(int(current_hour))]
+    current_hour = float(f"{current_hour:.1f}")
+    current_factor_level = levels[week_hours.index(current_hour)]
 
     return {
         "hours": week_hours,
@@ -203,9 +199,9 @@ async def get_default_values(db: Session = Depends(get_db)):
     user_defaults = crud.get_user_default_values(db, username)
     if user_defaults:
         default_values = DefaultValues()
-        default_values.initial_level = user_defaults.peak_level
-        default_values.decay_time = user_defaults.time_elapsed
-        default_values.decay_rate = user_defaults.second_level_measurement
+        default_values.initial_factor_level = user_defaults.peak_level
+        default_values.time_elapsed_until_measurement = user_defaults.time_elapsed
+        default_values.factor_measured_level = user_defaults.second_level_measurement
         default_values.refill_times = user_defaults.weekly_infusions
         return default_values
     raise HTTPException(status_code=404, detail="User not found")

@@ -86,9 +86,9 @@ def get_user_plot_data(db: Session, username: str) -> Union[None, schemas.UserPl
     if db_user:
         weekly_infusions_list = db_user.weekly_infusions.split(", ") if db_user.weekly_infusions else []
         return schemas.UserPlotsData(
-            initialPercentage=db_user.peak_level,
-            decayTime=db_user.time_elapsed,
-            decayRate=db_user.second_level_measurement,
+            initialFactorLevel=db_user.peak_level,
+            timeElapsedUntilMeasurement=db_user.time_elapsed,
+            factorMeasuredLevel=db_user.second_level_measurement,
             refillTimes=weekly_infusions_list,
             currentTime=""  # This needs to be set based on your logic
         )

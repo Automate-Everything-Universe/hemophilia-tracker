@@ -7,9 +7,9 @@ function fetchUserData(username) {
     fetch(`/user-data/${username}`)
         .then(response => response.json())
         .then(data => {
-            document.getElementById('peak_level').value = data.initialPercentage;
-            document.getElementById('time_elapsed').value = data.decayTime;
-            document.getElementById('second_level_measurement').value = data.decayRate;
+            document.getElementById('peak_level').value = data.initialFactorLevel;
+            document.getElementById('time_elapsed').value = data.timeElapsedUntilMeasurement;
+            document.getElementById('second_level_measurement').value = data.factorMeasuredLevel;
             refillTimes = data.refillTimes;
             updateFactorLevels(refillTimes);
         })
@@ -17,9 +17,9 @@ function fetchUserData(username) {
 }
 
 function updateFactorLevels(refillTimes) {
-    const initialPercentage = document.getElementById('peak_level').value;
-    const decayTime = document.getElementById('time_elapsed').value;
-    const decayRate = document.getElementById('second_level_measurement').value;
+    const initialFactorLevel = document.getElementById('peak_level').value;
+    const timeElapsedUntilMeasurement = document.getElementById('time_elapsed').value;
+    const factorMeasuredLevel = document.getElementById('second_level_measurement').value;
 
     const localTime = new Date();
     const currentTime = localTime.toLocaleString('en-US', {
@@ -29,7 +29,7 @@ function updateFactorLevels(refillTimes) {
     fetch('/data/update-factor-levels', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ initialPercentage, decayTime, decayRate, refillTimes, currentTime })
+        body: JSON.stringify({ initialFactorLevel, timeElapsedUntilMeasurement, factorMeasuredLevel, refillTimes, currentTime })
     })
     .then(response => response.json())
     .then(data => {
