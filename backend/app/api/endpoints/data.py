@@ -1,5 +1,5 @@
-import math
-from typing import List, Union, Tuple
+from math import exp, isclose
+from typing import List
 from datetime import datetime, timedelta
 from dataclasses import dataclass
 
@@ -25,7 +25,7 @@ app = FastAPI()
 
 
 class FactorLevelSettings(BaseModel):
-    initial_percentage: float = Field(..., alias='initialPercentage')
+    initial_level: float = Field(..., alias='initialLevel')
     decay_time: float = Field(..., alias='decayTime')
     decay_rate: float = Field(..., alias='decayRate')
     refill_times: List[str] = Field(..., alias='refillTimes')
@@ -37,7 +37,7 @@ class FactorLevelSettings(BaseModel):
 
 @dataclass
 class FactorCalculationParameters:
-    initial_percentage: float
+    initial_level: float
     decay_constant: float
     refill_hours: List[float]
     week_duration: int
@@ -64,8 +64,8 @@ def convert_to_datetime(date_str):
     return CET.localize(final_datetime)
 
 
-def calculate_decay_constant(decay_rate: float, decay_time: float) -> float:
-    return np.log(decay_rate / 100) / decay_time
+def calculate_decay_constant(initial_level: float, measured_level: float, time_elapsed: float) -> float:
+    return (np.log(measured_level) - np.log(initial_level)) / time_elapsed
 
 
 def generate_refill_hours(refill_times: List[str], start_of_week: datetime) -> List[float]:
@@ -167,7 +167,8 @@ async def get_factor_levels(settings: FactorLevelSettings) -> dict:
         datetime.combine(datetime.now(CET).date() - timedelta(days=datetime.now(CET).date().weekday()),
                          datetime.min.time()))
 
-    decay_constant = calculate_decay_constant(settings.decay_rate, settings.decay_time)
+    decay_constant = calculate_decay_constant(initial_level=settings.initial_level,
+                                              measured_level=settings.decay_rate, time_elapsed=settings.decay_time)
 
     refill_hours = generate_refill_hours(settings.refill_times, start_of_week)
 
@@ -176,7 +177,7 @@ async def get_factor_levels(settings: FactorLevelSettings) -> dict:
 
     level_params = FactorCalculationParameters(
         refill_hours=refill_hours,
-        initial_percentage=settings.initial_percentage,
+        initial_level=settings.initial_level,
         decay_constant=decay_constant,
         week_duration=hours_in_a_week
     )
@@ -202,7 +203,7 @@ async def get_default_values(db: Session = Depends(get_db)):
     user_defaults = crud.get_user_default_values(db, username)
     if user_defaults:
         default_values = DefaultValues()
-        default_values.initial_percentage = user_defaults.peak_level
+        default_values.initial_level = user_defaults.peak_level
         default_values.decay_time = user_defaults.time_elapsed
         default_values.decay_rate = user_defaults.second_level_measurement
         default_values.refill_times = user_defaults.weekly_infusions
