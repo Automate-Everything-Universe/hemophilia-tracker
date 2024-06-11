@@ -74,6 +74,6 @@ function deleteMeasurement(id) {
     fetch(`/users/${username}/measurements/${id}`, {
         method: 'DELETE'
     })
-    //.then(() => fetchMeasurements())
+    .then(() => fetchMeasurements())
     .catch(error => console.error('Error deleting measurement:', error));
 }

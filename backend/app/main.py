@@ -214,7 +214,7 @@ def delete_measurement(username: str, measurement_id: int, db: Session = Depends
 
     db.delete(db_measurement)
     db.commit()
-    return {"detail": "Measurement deleted"}
+    return db_measurement
 
 
 @app.get("/", response_class=HTMLResponse)
