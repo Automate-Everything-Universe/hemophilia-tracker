@@ -2,16 +2,14 @@ function sortDates() {
     const dayOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
     const splitTimeString = (timeString) => {
-        const [day, time, period] = timeString.split(/[\s:]+/);
-        return { day, time, period };
+        const [day, time, period] = timeString.split(' ');
+        const [hour, minute] = time.split(':').map(Number);
+        return { day, hour, minute, period };
     };
 
     dates.sort((a, b) => {
-        const { day: dayA, time: timeA, period: periodA } = splitTimeString(a);
-        const { day: dayB, time: timeB, period: periodB } = splitTimeString(b);
-
-        const [hourA, minuteA] = timeA.split(":").map(Number);
-        const [hourB, minuteB] = timeB.split(":").map(Number);
+        const { day: dayA, hour: hourA, minute: minuteA, period: periodA } = splitTimeString(a);
+        const { day: dayB, hour: hourB, minute: minuteB, period: periodB } = splitTimeString(b);
 
         const totalMinutesA = (dayOrder.indexOf(dayA) * 24 * 60) +
                               ((periodA === "PM" && hourA !== 12 ? hourA + 12 : (periodA === "AM" && hourA === 12 ? 0 : hourA)) * 60) +

@@ -3,7 +3,15 @@ document.addEventListener('DOMContentLoaded', function () {
         enableTime: true,
         dateFormat: "l h:i K", // Monday 03:30 PM
         weekNumbers: true,
-        time_24hr: false
+        time_24hr: false,
+        position: "above",
+        onChange: function(selectedDates, dateStr, instance) {
+                    const datetimePickerBtn = document.getElementById('datetimePicker');
+                    datetimePickerBtn.innerText = dateStr;
+
+                    const addDateTimeBtn = document.getElementById('addDateTime');
+                    addDateTimeBtn.classList.remove('hidden');
+                }
     });
 });
 
@@ -16,6 +24,7 @@ function addDateTime() {
         sortDates();
         updateDateList();
         datetimePicker._flatpickr.clear();
+        datetimePicker.innerText = `New event`;
     }
 
     const addDateTimeBtn = document.getElementById('addDateTime');
@@ -26,7 +35,7 @@ function addDateTime() {
 
 function updateDateList() {
     const selectedDatesDiv = document.getElementById('selectedDates');
-    selectedDatesDiv.innerHTML = ''; // Clear the existing dates
+    selectedDatesDiv.innerHTML = '';
 
     dates.forEach((date, index) => {
         const dateTag = document.createElement('div');
