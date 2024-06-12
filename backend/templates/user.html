@@ -9,10 +9,27 @@
         <p><strong>First Name:</strong> <span id="first_name">{{ user.first_name }}</span></p>
         <p><strong>Last Name:</strong> <span id="last_name">{{ user.last_name }}</span></p>
         <p><strong>Peak Level:</strong> <span id="peak_level">{{ user.peak_level }}</span></p>
-        </p>
         <p><strong>Weekly Infusions:</strong> <span id="weekly_infusions">{{ user.weekly_infusions }}</span></p>
     </div>
 </div>
+
+<br>
+
+<div class="container mx-auto py-8 px-4">
+    <div class="bg-white shadow rounded-lg p-6">
+        <h3 class="text-lg font-semibold mb-2">Current factor level</h3>
+        <canvas id="factorLevelDoughnutChart"></canvas>
+    </div>
+</div>
+
+<br>
+
+<div class="container mx-auto py-8 px-4">
+    <div id="factorLevelChart" class="space-y-4 shadow rounded bg-white"></div>
+</div>
+
+<br>
+
 
 <div class="container mx-auto py-8 px-4">
     <div class="bg-white shadow rounded-lg p-6">
@@ -26,6 +43,7 @@
 </div>
 
 <br>
+
 <div class="container mx-auto py-8 px-4">
     <div class="bg-white shadow rounded-lg p-6">
         <h3 class="text-lg font-semibold mb-2">Add Measurement</h3>
@@ -63,17 +81,6 @@
                 class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-2 rounded">Add Measurement
         </button>
     </div>
-</div>
-
-<div class="container mx-auto py-8 px-4">
-    <div class="bg-white shadow rounded-lg p-6">
-        <h3 class="text-lg font-semibold mb-2">Current factor level</h3>
-        <canvas id="factorLevelDoughnutChart"></canvas>
-    </div>
-</div>
-<br>
-<div class="container mx-auto py-8 px-4">
-    <div id="factorLevelChart" class="space-y-4 shadow rounded bg-white"></div>
 </div>
 
 <br>
