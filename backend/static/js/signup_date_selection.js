@@ -87,8 +87,6 @@ function submitSignupForm(event) {
         password: formData.get('password'),
         email: formData.get('email'),
         peak_level: formData.get('peak_level'),
-        time_elapsed: formData.get('time_elapsed'),
-        second_level_measurement: formData.get('second_level_measurement'),
         weekly_infusions: getSignupRefillTimes()
     };
 
@@ -104,7 +102,6 @@ function submitSignupForm(event) {
         if (!response.ok) {
           return response.json().then(error => {
             alert(`Signup failed: ${error.detail}`);
-            // Handle the error response from the server
             throw new Error(`Signup failed: ${error.detail}`);
           });
         }
@@ -113,12 +110,11 @@ function submitSignupForm(event) {
       .then(data => {
         alert('Account created');
         console.log('Signup successful:', data);
-        window.location.href = '/login'; // Redirect to the login page
+        window.location.href = '/login';
       })
       .catch(error => {
         console.error('Error during signup:', error);
       });
       }
 
-// document.getElementById('signupForm').onsubmit = submitSignupForm;
 window.submitSignupForm = submitSignupForm;

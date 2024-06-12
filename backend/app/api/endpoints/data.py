@@ -1,5 +1,5 @@
 from math import exp, isclose
-from typing import List
+from typing import List, Optional
 from datetime import datetime, timedelta
 from dataclasses import dataclass
 
@@ -25,11 +25,10 @@ app = FastAPI()
 
 
 class FactorLevelSettings(BaseModel):
-    initial_factor_level: float = Field(..., alias='initialFactorLevel')
-    time_elapsed_until_measurement: float = Field(..., alias='timeElapsedUntilMeasurement')
-    factor_measured_level: float = Field(..., alias='factorMeasuredLevel')
-    refill_times: List[str] = Field(..., alias='refillTimes')
-    current_level: str = Field(..., alias='currentTime')  # Add currentTime field
+    initial_factor_level: Optional[float] = Field(..., alias='peakLevel')
+    decay_constant: Optional[float] = Field(..., alias='decayConstant')
+    refill_times: Optional[List[str]] = Field(..., alias='refillTimes')
+    current_level: Optional[str] = Field(..., alias='currentTime')
 
     class Config:
         populate_by_name = True
@@ -162,8 +161,7 @@ async def get_factor_levels(settings: FactorLevelSettings) -> dict:
         datetime.combine(datetime.now(CET).date() - timedelta(days=datetime.now(CET).date().weekday()),
                          datetime.min.time()))
 
-    decay_constant = calculate_decay_constant(initial_factor_level=settings.initial_factor_level,
-                                              measured_level=settings.factor_measured_level, time_elapsed=settings.time_elapsed_until_measurement)
+    decay_constant = settings.decay_constant
 
     refill_hours = generate_refill_hours(settings.refill_times, start_of_week)
 
@@ -196,13 +194,17 @@ async def get_factor_levels(settings: FactorLevelSettings) -> dict:
 @router.get("/default-values", response_model=DefaultValues)
 async def get_default_values(db: Session = Depends(get_db)):
     username = "stefanjosan"
+
+    db_user = crud.get_user_by_username(db, username)
     user_defaults = crud.get_user_default_values(db, username)
     if user_defaults:
+        mean_decay_constant = crud.calculate_mean_decay_constant(db, db_user.id)
+        peak_level = db_user.peak_level
+
         default_values = DefaultValues()
-        default_values.initial_factor_level = user_defaults.peak_level
-        default_values.time_elapsed_until_measurement = user_defaults.time_elapsed
-        default_values.factor_measured_level = user_defaults.second_level_measurement
-        default_values.refill_times = user_defaults.weekly_infusions
+        default_values.decay_constant = mean_decay_constant
+        default_values.peak_level = peak_level
+        default_values.refill_times = db_user.weekly_infusions.split(", ")
         return default_values
     raise HTTPException(status_code=404, detail="User not found")
 
