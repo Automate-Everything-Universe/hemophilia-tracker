@@ -1,5 +1,7 @@
 from typing import Union
 
+import numpy as np
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 
@@ -26,8 +28,6 @@ def create_user(db: Session, user: schemas.UserCreate):
         password=hashed_password,
         email=user.email,
         peak_level=user.peak_level,
-        time_elapsed=user.time_elapsed,
-        second_level_measurement=user.second_level_measurement,
         weekly_infusions=user.weekly_infusions
     )
 
@@ -52,8 +52,6 @@ def get_user_default_values(db: Session, username: str) -> Union[schemas.UserSig
             password=db_user.password,
             email=db_user.email,
             peak_level=db_user.peak_level,
-            time_elapsed=db_user.time_elapsed,
-            second_level_measurement=db_user.second_level_measurement,
             weekly_infusions=weekly_infusions_list
         )
     return None
@@ -83,14 +81,24 @@ def delete_user_by_email(db: Session, email: str):
 
 def get_user_plot_data(db: Session, username: str) -> Union[None, schemas.UserPlotsData]:
     db_user = get_user_by_username(db, username)
+
     if db_user:
+        measurements = db.query(models.Measurement).filter(models.Measurement.user_id == db_user.id).all()
+        if not measurements:
+            raise HTTPException(status_code=404, detail="No measurements found for this user.")
+
+        decay_constants = [calculate_decay_constant(m.peak_level, m.second_level_measurement, m.time_elapsed) for m in
+                           measurements]
+        decay_constant = np.mean(decay_constants)
+
+        peak_level = db_user.peak_level
         weekly_infusions_list = db_user.weekly_infusions.split(", ") if db_user.weekly_infusions else []
+
         return schemas.UserPlotsData(
-            initialFactorLevel=db_user.peak_level,
-            timeElapsedUntilMeasurement=db_user.time_elapsed,
-            factorMeasuredLevel=db_user.second_level_measurement,
+            decay_constant=decay_constant,
+            peak_level=peak_level,
             refillTimes=weekly_infusions_list,
-            currentTime=""  # This needs to be set based on your logic
+            currentTime=""
         )
     return None
 
@@ -111,3 +119,18 @@ def create_measurement(db: Session, measurement: schemas.MeasurementCreate, user
     db.commit()
     db.refresh(db_measurement)
     return db_measurement
+
+
+def calculate_mean_decay_constant(db: Session, user_id: int) -> float:
+    measurements = db.query(models.Measurement).filter(models.Measurement.user_id == user_id).all()
+    if not measurements:
+        raise HTTPException(status_code=404, detail="No measurements found for this user.")
+
+    decay_constants = []
+    for m in measurements:
+        decay_constant = calculate_decay_constant(m.peak_level, m.second_level_measurement,
+                                                  m.time_elapsed)
+        decay_constants.append(decay_constant)
+    mean_decay_constant = np.mean(decay_constants)
+
+    return float(mean_decay_constant)

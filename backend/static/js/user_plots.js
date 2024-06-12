@@ -7,29 +7,24 @@ function fetchUserData(username) {
     fetch(`/user-data/${username}`)
         .then(response => response.json())
         .then(data => {
-            document.getElementById('peak_level').value = data.initialFactorLevel;
-            document.getElementById('time_elapsed').value = data.timeElapsedUntilMeasurement;
-            document.getElementById('second_level_measurement').value = data.factorMeasuredLevel;
-            refillTimes = data.refillTimes;
-            updateFactorLevels(refillTimes);
+            updateFactorLevels(data);
         })
         .catch(error => console.error('Error fetching user data:', error));
 }
 
-function updateFactorLevels(refillTimes) {
-    const initialFactorLevel = document.getElementById('peak_level').value;
-    const timeElapsedUntilMeasurement = document.getElementById('time_elapsed').value;
-    const factorMeasuredLevel = document.getElementById('second_level_measurement').value;
-
+function updateFactorLevels(data) {
     const localTime = new Date();
     const currentTime = localTime.toLocaleString('en-US', {
         weekday: 'long', hour: '2-digit', minute: '2-digit', hour12: true
     });
+    const decayConstant = data.decayConstant;
+    const peakLevel = data.peakLevel;
+    const refillTimes = data.refillTimes;
 
     fetch('/data/update-factor-levels', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ initialFactorLevel, timeElapsedUntilMeasurement, factorMeasuredLevel, refillTimes, currentTime })
+        body: JSON.stringify({ decayConstant, peakLevel, refillTimes, currentTime })
     })
     .then(response => response.json())
     .then(data => {

@@ -16,7 +16,6 @@ from sqlalchemy import text
 
 from passlib.context import CryptContext
 
-from .calculations import calculate_decay_constant
 from .api.router import router as api_router
 from . import models, schemas, crud
 from .schemas import UserSignup
@@ -114,8 +113,6 @@ def signup(user: UserSignup, db: Session = Depends(get_db)):
             first_name=user.first_name,
             last_name=user.last_name,
             peak_level=user.peak_level,
-            time_elapsed=user.time_elapsed,
-            second_level_measurement=user.second_level_measurement,
             weekly_infusions=user.weekly_infusions,
         )
         crud.create_user(db=db, user=new_user)
@@ -180,14 +177,12 @@ def create_measurement(username: str, measurement: schemas.MeasurementCreate, db
 
     measurement_date = datetime.strptime(measurement.measurement_date, "%Y-%m-%dT%H:%M")  # Convert string to datetime
 
-    decay_constant = crud.calculate_decay_constant(measurement.second_level_measurement, measurement.time_elapsed)
     db_measurement = models.Measurement(
         user_id=db_user.id,
         measurement_date=measurement_date,
         peak_level=measurement.peak_level,
         time_elapsed=measurement.time_elapsed,
         second_level_measurement=measurement.second_level_measurement,
-        decay_constant=decay_constant,
         comment=measurement.comment
     )
     db.add(db_measurement)
@@ -196,7 +191,6 @@ def create_measurement(username: str, measurement: schemas.MeasurementCreate, db
     return db_measurement
 
 
-# Redirect endpoint without trailing slash to the correct endpoint
 @app.post("/users/{username}/measurements", include_in_schema=False)
 async def redirect_measurements(username: str):
     return RedirectResponse(url=f"/users/{username}/measurements/", status_code=307)

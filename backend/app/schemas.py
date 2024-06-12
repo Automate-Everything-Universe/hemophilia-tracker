@@ -5,9 +5,8 @@ from typing import Optional, List
 
 
 class DefaultValues(BaseModel):
-    initial_factor_level: Optional[float] = Field(None)
-    time_elapsed_until_measurement: Optional[float] = Field(None)
-    factor_measured_level: Optional[float] = Field(None)
+    decay_constant: Optional[float] = Field(None)
+    peak_level: Optional[float] = Field(None)
     refill_times: Optional[list[str]] = Field(None)
 
 
@@ -17,9 +16,7 @@ class UserSignup(BaseModel):
     username: str
     password: str
     email: Optional[str] = None
-    peak_level: Optional[float] = Field(None, alias='peakLevel')
-    time_elapsed: Optional[float] = Field(None, alias='timeElapsed')
-    second_level_measurement: Optional[float] = Field(None, alias='secondLevelMeasurement')
+    peak_level: float
     weekly_infusions: Optional[List[str]] = None
 
     class Config:
@@ -31,9 +28,7 @@ class UserBase(BaseModel):
     last_name: str = None
     username: str
     email: Optional[str] = None
-    peak_level: Optional[float] = 60
-    time_elapsed: Optional[float] = 30
-    second_level_measurement: Optional[float] = 15
+    peak_level: float
     weekly_infusions: Optional[str] = None
 
 
@@ -49,14 +44,14 @@ class User(UserBase):
 
 
 class UserPlotsData(BaseModel):
-    initial_factor_level: float = Field(..., alias='initialFactorLevel')
-    time_elapsed_until_measurement: float = Field(..., alias='timeElapsedUntilMeasurement')
-    factor_measured_level: float = Field(..., alias='factorMeasuredLevel')
+    decay_constant: float = Field(..., alias='decayConstant')
+    peak_level: float = Field(..., alias='peakLevel')
     refill_times: List[str] = Field(..., alias='refillTimes')
     current_level: str = Field(..., alias='currentTime')
 
     class Config:
         populate_by_name = True
+        orm_mode = True
 
 
 class MeasurementBase(BaseModel):
@@ -64,7 +59,6 @@ class MeasurementBase(BaseModel):
     peak_level: Optional[float] = None
     time_elapsed: Optional[float] = None
     second_level_measurement: Optional[float] = None
-    decay_constant: Optional[float] = None
     comment: Optional[str] = None
 
 
