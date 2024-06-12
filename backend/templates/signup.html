@@ -42,7 +42,7 @@
                 <div class="space-y-4">
                     <h3 class="text-lg font-semibold mb-2">Measurement Data</h3>
                     <small class="text-gray-600">
-                        The measurement data is used to calculate the prediction curve.
+                        The measurement data is used to calculate the factor level.
                     </small>
                     <div class="p-4 shadow rounded bg-white">
                         <label for="peak_level" class="block text-sm font-medium text-gray-700">Peak Factor Level After
@@ -54,43 +54,20 @@
                         <small class="text-gray-600">Enter the highest percentage of Factor level achieved immediately
                             following the infusion.</small>
                     </div>
-                    <div class="p-4 shadow rounded bg-white">
-                        <label for="time_elapsed" class="block text-sm font-medium text-gray-700">Time Elapsed Until
-                            Factor
-                            Level
-                            Measurement (hours)</label>
-                        <input type="number" id="time_elapsed" name="time_elapsed" step="0.01"
-                               class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
-                        <br>
-                        <small class="text-gray-600">Specify the number of hours from infusion to when the blood sample
-                            was
-                            collected.</small>
-                    </div>
-                    <div class="p-4 shadow rounded bg-white">
-                        <label for="second_level_measurement" class="block text-sm font-medium text-gray-700">Factor
-                            Level
-                            at
-                            Time of
-                            Measurement (%)</label>
-                        <input type="number" id="second_level_measurement" name="second_level_measurement" step="0.01"
-                               class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
-                        <br>
-                        <small class="text-gray-600">Input the percentage of Factor level recorded at the specified time
-                            post-infusion.</small>
-                    </div>
                 </div>
 
                 <!-- Date selection for signup -->
                 <div class="space-y-4">
                     <h3 class="text-lg font-semibold mb-2">Weekly Schedule</h3>
                     <small class="text-gray-600">
-                        The infusion events are used to increase the factor level on the curve to the peak value.
+                        The infusion events are used to plot the factor level on the weekly summary curve.
                     </small>
                     <div class="p-4 shadow rounded bg-white">
                         <label for="datetimePickerSignup" class="block text-sm font-medium text-gray-700">Scheduled
                             Weekly
                             Infusion
-                            Times</label>
+                            Times
+                        </label>
                         <div id="datesBackgroundSignup"
                              class="mt-1 block w-full rounded-md px-4 py-2 text-left text-gray-700 bg-gray-200 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-xs">
                             <div id="selectedDatesSignup" class="flex flex-wrap space-x-2"></div>
