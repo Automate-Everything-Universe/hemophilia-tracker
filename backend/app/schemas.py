@@ -6,6 +6,8 @@ from typing import Optional, List
 
 class DefaultValues(BaseModel):
     decay_constant: Optional[float] = Field(None)
+    time_elapsed: Optional[float] = Field(None)
+    second_level_measurement: Optional[float] = Field(None)
     peak_level: Optional[float] = Field(None)
     refill_times: Optional[list[str]] = Field(None)
 
@@ -76,3 +78,12 @@ class Measurement(MeasurementBase):
 
     class Config:
         orm_mode = True
+
+
+class DecayConstantParameters(BaseModel):
+    peak_level: Optional[float] = Field(..., alias='peakLevel')
+    time_elapsed: Optional[float] = Field(..., alias='timeElapsed')
+    second_level_measurement: Optional[float] = Field(..., alias='secondLevelMeasurement')
+
+    class Config:
+        populate_by_name = True

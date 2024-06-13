@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, List
 
 import numpy as np
 from fastapi import HTTPException
@@ -121,11 +121,15 @@ def create_measurement(db: Session, measurement: schemas.MeasurementCreate, user
     return db_measurement
 
 
-def calculate_mean_decay_constant(db: Session, user_id: int) -> float:
+def get_measurements(db: Session, user_id: int) -> List[models.Measurement]:
     measurements = db.query(models.Measurement).filter(models.Measurement.user_id == user_id).all()
     if not measurements:
         raise HTTPException(status_code=404, detail="No measurements found for this user.")
+    return measurements
 
+
+def calculate_mean_decay_constant(db: Session, user_id: int) -> float:
+    measurements = get_measurements(db=db, user_id=user_id)
     decay_constants = []
     for m in measurements:
         decay_constant = calculate_decay_constant(m.peak_level, m.second_level_measurement,
@@ -134,3 +138,8 @@ def calculate_mean_decay_constant(db: Session, user_id: int) -> float:
     mean_decay_constant = np.mean(decay_constants)
 
     return float(mean_decay_constant)
+
+
+def get_measurement_values(db: Session, user_id: int, measurement_id: int) -> float:
+    measurements = get_measurements(db=db, user_id=user_id)
+    return measurements[measurement_id]
