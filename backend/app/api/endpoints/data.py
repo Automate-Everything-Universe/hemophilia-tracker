@@ -12,8 +12,9 @@ import numpy as np
 import pytz
 
 from ... import schemas, crud
+from ...calculations import calculate_decay_constant
 from ...dependencies import get_db
-from ...schemas import DefaultValues
+from ...schemas import DefaultValues, DecayConstantParameters
 
 CET = pytz.timezone('Europe/Berlin')
 
@@ -61,10 +62,6 @@ def convert_to_datetime(date_str):
     final_datetime = datetime_obj.replace(day=correct_date.day)
 
     return CET.localize(final_datetime)
-
-
-def calculate_decay_constant(initial_factor_level: float, measured_level: float, time_elapsed: float) -> float:
-    return (np.log(measured_level) - np.log(initial_factor_level)) / time_elapsed
 
 
 def generate_refill_hours(refill_times: List[str], start_of_week: datetime) -> List[float]:
@@ -191,22 +188,41 @@ async def get_factor_levels(settings: FactorLevelSettings) -> dict:
     }
 
 
+@router.post("/calculate-decay-constant", response_model=dict)
+async def get_factor_levels(measurement: DecayConstantParameters) -> dict:
+    decay_constant = calculate_decay_constant(peak_level=measurement.peak_level,
+                                              measured_level=measurement.second_level_measurement,
+                                              time_elapsed=measurement.time_elapsed)
+
+    return {
+        "decay_constant": decay_constant,
+    }
+
+
 @router.get("/default-values", response_model=DefaultValues)
 async def get_default_values(db: Session = Depends(get_db)):
     username = "stefanjosan"
+    measurement_id = 0
 
     db_user = crud.get_user_by_username(db, username)
-    user_defaults = crud.get_user_default_values(db, username)
-    if user_defaults:
-        mean_decay_constant = crud.calculate_mean_decay_constant(db, db_user.id)
-        peak_level = db_user.peak_level
+    measurement = crud.get_measurement_values(db=db, user_id=db_user.id, measurement_id=measurement_id)
+
+    if measurement:
+        peak_level = measurement.peak_level
+        time_elapsed = measurement.time_elapsed
+        second_level_measurement = measurement.second_level_measurement
+        decay_constant = calculate_decay_constant(peak_level=measurement.peak_level,
+                                                  measured_level=measurement.second_level_measurement,
+                                                  time_elapsed=measurement.time_elapsed)
 
         default_values = DefaultValues()
-        default_values.decay_constant = mean_decay_constant
+        default_values.decay_constant = decay_constant
         default_values.peak_level = peak_level
+        default_values.time_elapsed = time_elapsed
+        default_values.second_level_measurement = second_level_measurement
         default_values.refill_times = db_user.weekly_infusions.split(", ")
         return default_values
-    raise HTTPException(status_code=404, detail="User not found")
+    raise HTTPException(status_code=404, detail="Measurement not found")
 
 
 app.include_router(router)
