@@ -27,6 +27,8 @@ class Measurement(Base):
     peak_level = Column(Float(2), nullable=False)
     time_elapsed = Column(Float(2), nullable=False)
     second_level_measurement = Column(Float(2), nullable=False)
+    decay_constant = Column(Float(2), nullable=False)
+    halving_time = Column(Float(2), nullable=False)
     comment = Column(String(100), nullable=True)
 
     user = relationship("User", back_populates="measurements")

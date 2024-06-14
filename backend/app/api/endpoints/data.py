@@ -12,7 +12,7 @@ import numpy as np
 import pytz
 
 from ... import schemas, crud
-from ...calculations import calculate_decay_constant
+from ...calculations import calculate_decay_constant, calculate_halving_time
 from ...dependencies import get_db
 from ...schemas import DefaultValues, DecayConstantParameters
 
@@ -197,6 +197,13 @@ async def get_factor_levels(measurement: DecayConstantParameters) -> dict:
     return {
         "decay_constant": decay_constant,
     }
+
+
+@router.post("/calculate-halving-time", response_model=dict)
+async def get_halving_time(settings: FactorLevelSettings) -> dict:
+    decay_constant = settings.decay_constant
+    halving_time = calculate_halving_time(decay_constant)
+    return {"halving_time": halving_time}
 
 
 @router.get("/default-values", response_model=DefaultValues)
