@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const username = document.getElementById('username').textContent;
-    fetchUserData(username);
+    const username = document.getElementById('username').value;
+    fetchUserDataForPlot(username);
 });
 
-function fetchUserData(username) {
+function fetchUserDataForPlot(username) {
     fetch(`/user-data/${username}`)
         .then(response => response.json())
         .then(data => {
