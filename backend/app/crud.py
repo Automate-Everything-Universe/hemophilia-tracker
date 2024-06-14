@@ -143,3 +143,14 @@ def calculate_mean_decay_constant(db: Session, user_id: int) -> float:
 def get_measurement_values(db: Session, user_id: int, measurement_id: int) -> float:
     measurements = get_measurements(db=db, user_id=user_id)
     return measurements[measurement_id]
+
+
+def update_user(db: Session, db_user: models.User, user_update: schemas.UserUpdate) -> models.User:
+    db_user.email = user_update.email
+    db_user.first_name = user_update.first_name
+    db_user.last_name = user_update.last_name
+    db_user.peak_level = user_update.peak_level
+    db_user.weekly_infusions = ", ".join(user_update.weekly_infusions)
+    db.commit()
+    db.refresh(db_user)
+    return db_user

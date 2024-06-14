@@ -87,3 +87,12 @@ class DecayConstantParameters(BaseModel):
 
     class Config:
         populate_by_name = True
+
+
+class UserUpdate(BaseModel):
+    email: Optional[str] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    peak_level: Optional[float] = None
+    weekly_infusions: Optional[List[str]] = None
+

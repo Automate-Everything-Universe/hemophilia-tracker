@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function fetchMeasurements() {
-    const username = document.getElementById('username').textContent;
+    const username = document.getElementById('username').value;
     fetch(`/users/${username}/measurements/`)
         .then(response => response.json())
         .then(data => {
@@ -44,7 +44,7 @@ function fetchMeasurements() {
 
 function submitMeasurementForm(event) {
     console.log('Submitting measurement form');
-    const username = document.getElementById('username').textContent;
+    const username = document.getElementById('username').value;
     const measurementData = {
         measurement_date: document.getElementById('measurement_date').value,
         peak_level: parseFloat(document.getElementById('measurement_peak_level').value),
@@ -70,7 +70,7 @@ function submitMeasurementForm(event) {
 }
 
 function deleteMeasurement(id) {
-    const username = document.getElementById('username').textContent;
+    const username = document.getElementById('username').value;
     fetch(`/users/${username}/measurements/${id}`, {
         method: 'DELETE'
     })
