@@ -61,6 +61,8 @@ class MeasurementBase(BaseModel):
     peak_level: Optional[float] = None
     time_elapsed: Optional[float] = None
     second_level_measurement: Optional[float] = None
+    halving_time: Optional[float] = None
+    decay_constant: Optional[float] = None
     comment: Optional[str] = None
 
 
@@ -69,6 +71,8 @@ class MeasurementCreate(MeasurementBase):
     peak_level: Optional[float] = None
     time_elapsed: Optional[float] = None
     second_level_measurement: Optional[float] = None
+    halving_time: Optional[float] = None
+    decay_constant: Optional[float] = None
     comment: Optional[str] = None
 
 

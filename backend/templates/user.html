@@ -92,11 +92,21 @@
     <div class="bg-white shadow rounded-lg p-6">
         <h3 class="text-lg font-semibold mb-2">Measurements overview</h3>
         <small>The number of measurements increase the precision of the factor prediction. </small>
+        <div class="bg-white shadow rounded-lg p-6">
+            <label for="mean_halving_time" class="block text-sm font-medium text-gray-700 flex items-center">
+                <strong>Factor halving time for all measurements (hours): <span id="mean_halving_time"
+                                                                               class="block text-sm font-medium text-gray-700  inline-flex items-center"></span></strong>
+
+            </label>
+        </div>
+        <br>
         <div id="measurementsList"></div>
+        <br>
         <div id="noMeasurementsMessage" class="hidden text-red-500 text-sm font-semibold">No measurements found. Please
             add a measurement to enable predictions.
         </div>
     </div>
+
 </div>
 
 <br>
@@ -141,6 +151,7 @@
 </div>
 
 <br>
+<script src="/static/js/halving_time.js"></script>
 <script src="/static/js/sort_dates.js"></script>
 <script src="/static/js/signup_date_selection.js"></script>
 <script src="/static/js/plot_functions.js"></script>

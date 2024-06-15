@@ -22,6 +22,7 @@ function fetchMeasurements() {
                     measurementItem.innerHTML = `
                         <div class="mb-4">
                             <label for="measurement_date_${measurement.id}" class="block text-sm font-medium text-gray-700"><strong>Measurement Date:</strong> ${new Date(measurement.measurement_date).toLocaleString()}</label>
+                            <label for="halving_time_${measurement.id}" class="block text-sm font-medium text-gray-700"><strong>Factor halving time (hours):</strong> ${measurement.halving_time.toFixed(1)}</label>
                             <label for="peak_level_${measurement.id}" class="block text-sm font-medium text-gray-700"><strong>Peak Factor Level After Infusion (%):</strong> ${measurement.peak_level}</label>
                             <label for="time_elapsed_${measurement.id}" class="block text-sm font-medium text-gray-700"><strong>Time Elapsed (hours):</strong> ${measurement.time_elapsed}</label>
                             <label for="second_level_measurement_${measurement.id}" class="block text-sm font-medium text-gray-700"><strong>Second Level Measurement (%):</strong> ${measurement.second_level_measurement}</label>

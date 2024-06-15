@@ -18,6 +18,7 @@ from passlib.context import CryptContext
 
 from .api.router import router as api_router
 from . import models, schemas, crud
+from .calculations import calculate_decay_constant, calculate_halving_time
 from .schemas import UserSignup
 from .dependencies import get_db
 
@@ -192,7 +193,12 @@ def create_measurement(username: str, measurement: schemas.MeasurementCreate, db
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
 
-    measurement_date = datetime.strptime(measurement.measurement_date, "%Y-%m-%dT%H:%M")  # Convert string to datetime
+    measurement_date = datetime.strptime(measurement.measurement_date, "%Y-%m-%dT%H:%M")
+
+    decay_constant = calculate_decay_constant(peak_level=measurement.peak_level,
+                                              measured_level=measurement.second_level_measurement,
+                                              time_elapsed=measurement.time_elapsed)
+    halving_time = calculate_halving_time(decay_constant=decay_constant)
 
     db_measurement = models.Measurement(
         user_id=db_user.id,
@@ -200,6 +206,8 @@ def create_measurement(username: str, measurement: schemas.MeasurementCreate, db
         peak_level=measurement.peak_level,
         time_elapsed=measurement.time_elapsed,
         second_level_measurement=measurement.second_level_measurement,
+        decay_constant=decay_constant,
+        halving_time=halving_time,
         comment=measurement.comment
     )
     db.add(db_measurement)
