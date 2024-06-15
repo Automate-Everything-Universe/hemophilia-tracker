@@ -128,7 +128,8 @@ def delete_user_by_email(email: str, db: Session = Depends(get_db)):
 
 
 @app.get("/users/{username}", response_class=HTMLResponse)
-def read_user_by_username(username: str, request: Request, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def read_user_by_username(username: str, request: Request, token: str = Depends(oauth2_scheme),
+                          db: Session = Depends(get_db)):
     payload = verify_token(token)
     current_user = crud.get_user_by_username(db, username=payload.get("sub"))
     if username != current_user.username:
@@ -229,6 +230,11 @@ def delete_measurement(username: str, measurement_id: int, db: Session = Depends
     db.delete(db_measurement)
     db.commit()
     return db_measurement
+
+
+@app.get("/disclaimer", response_class=HTMLResponse)
+def get_login_form(request: Request):
+    return templates.TemplateResponse("disclaimer.html", {"request": request})
 
 
 @app.get("/", response_class=HTMLResponse)

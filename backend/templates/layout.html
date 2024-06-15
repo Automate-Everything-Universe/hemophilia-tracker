@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="icon" href="/static/images/logo.png">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -14,25 +15,58 @@
     {% block extra_scripts %}
     {% endblock %}
 
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .footer {
+            background-color: #1a202c; /* Tailwind's gray-900 */
+            color: white;
+            padding: 1rem 0;
+        }
+
+
+
+
+
+    </style>
 </head>
 <body class="bg-gray-100">
-<header class="bg-blue-500 text-white py-4">
+<header class="bg-gray-300 text-gray-800 py-4">
     <div class="container mx-auto flex justify-between items-center px-4">
-        <h1 class="text-2xl font-bold">Hemophilia-Tracker</h1>
-        <h4 class="font-bold">This product is made to inform and not to be used as medical advice.</h4>
+        <div class="flex items-center space-x-4">
+            <img src="/static/images/logo.png" alt="logo" class="logo" style="height: 35px;">
+            <h1 class="text-2xl font-bold">Hemophilia Tracker</h1>
+        </div>
         <nav>
             <ul class="flex space-x-4">
                 <li><a href="/" class="hover:underline">Home</a></li>
-                <li><a href="/login" class="hover:underline">User Login</a></li>
+                <li><a href="/login" class="hover:underline">Login</a></li>
                 <li><a href="/signup" class="hover:underline">Sign up</a></li>
+                <li><a href="/disclaimer" class="hover:underline">Disclaimer</a></li>
             </ul>
         </nav>
     </div>
 </header>
-
+<div class="content">
+    {% block content %}
+    {% endblock %}
+</div>
+<footer class="footer text-center">
+    <div class="container mx-auto">
+        <p>Created by <a href="https://automate-everything-company.com" class="underline">Automate Everything
+            Company</a></p>
+    </div>
+</footer>
 </body>
-{% block content %}
-{% endblock %}
-
-{% include 'footer.html' %}
 </html>
