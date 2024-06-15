@@ -30,8 +30,8 @@ function updateFactorLevels(data) {
     .then(data => {
         plotFactorLevelChart(data);
         createOrUpdateDoughnutChart(data);
+        addHalvingTime(data);
     })
     .catch(error => console.error('Error updating data:', error));
 }
 
-// Include all the plotting functions (plotFactorLevelChart, createOrUpdateDoughnutChart, etc.) from app.js

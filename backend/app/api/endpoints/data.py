@@ -159,6 +159,7 @@ async def get_factor_levels(settings: FactorLevelSettings) -> dict:
                          datetime.min.time()))
 
     decay_constant = settings.decay_constant
+    halving_time = calculate_halving_time(decay_constant=decay_constant)
 
     refill_hours = generate_refill_hours(settings.refill_times, start_of_week)
 
@@ -184,7 +185,8 @@ async def get_factor_levels(settings: FactorLevelSettings) -> dict:
         "start_of_week": start_of_week.isoformat(),
         "levels": levels,
         "current_time": current_time.isoformat(),
-        "current_factor_level": [current_hour, current_factor_level]
+        "current_factor_level": [current_hour, current_factor_level],
+        "halving_time": halving_time
     }
 
 
@@ -197,13 +199,6 @@ async def get_factor_levels(measurement: DecayConstantParameters) -> dict:
     return {
         "decay_constant": decay_constant,
     }
-
-
-@router.post("/calculate-halving-time", response_model=dict)
-async def get_halving_time(settings: FactorLevelSettings) -> dict:
-    decay_constant = settings.decay_constant
-    halving_time = calculate_halving_time(decay_constant)
-    return {"halving_time": halving_time}
 
 
 @router.get("/default-values", response_model=DefaultValues)

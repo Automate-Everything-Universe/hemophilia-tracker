@@ -62,6 +62,7 @@ async function updateFactorLevels() {
         const updateData = await updateResponse.json();
         plotFactorLevelChart(updateData);
         createOrUpdateDoughnutChart(updateData);
+        addHalvingTime(updateData);
 
     } catch (error) {
         console.error('Error updating data:', error);
