@@ -53,7 +53,7 @@ class UserPlotsData(BaseModel):
 
     class Config:
         populate_by_name = True
-        orm_mode = True
+        from_attributes = True
 
 
 class MeasurementBase(BaseModel):
@@ -81,7 +81,7 @@ class Measurement(MeasurementBase):
     user_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class DecayConstantParameters(BaseModel):
@@ -100,3 +100,7 @@ class UserUpdate(BaseModel):
     peak_level: Optional[float] = None
     weekly_infusions: Optional[List[str]] = None
 
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str

@@ -1,9 +1,10 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List
 
 from fastapi import FastAPI, Depends, HTTPException, Form, APIRouter
 from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.templating import Jinja2Templates
@@ -18,9 +19,10 @@ from passlib.context import CryptContext
 
 from .api.router import router as api_router
 from . import models, schemas, crud
+from .auth import ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token, verify_token
 from .calculations import calculate_decay_constant, calculate_halving_time
 from .schemas import UserSignup
-from .dependencies import get_db
+from .dependencies import get_db, get_current_user, oauth2_scheme
 
 STATIC_PATH = Path(__file__).parents[1] / 'static'
 TEMPLATES_PATH = Path(__file__).parents[1] / 'templates'
@@ -53,33 +55,20 @@ async def http_exception_handler(request: Request, exc: HTTPException):
     )
 
 
-@app.get("/test-db-connection")
-def test_db_connection(db: Session = Depends(get_db)):
-    try:
-        # Attempt to execute a simple query
-        result = db.execute(text("SELECT 1"))
-        return {"status": "success", "result": result.fetchall()}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
 @app.get("/login", response_class=HTMLResponse)
 def get_login_form(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
 
-@app.post("/login")
-def login(
-        username: str = Form(...),
-        password: str = Form(...),
-        db: Session = Depends(get_db)
-):
-    db_user = crud.get_user_by_username(db, username=username)
-    if db_user is None:
+@app.post("/login", response_model=schemas.Token)
+def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    db_user = crud.get_user_by_username(db, username=form_data.username)
+    if db_user is None or not crud.verify_password(form_data.password, db_user.password):
         raise HTTPException(status_code=400, detail="Invalid username or password")
-    if not crud.verify_password(password, db_user.password):
-        raise HTTPException(status_code=400, detail="Invalid username or password")
-    return RedirectResponse(url=f"/users/{username}", status_code=303)
+
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(data={"sub": db_user.username}, expires_delta=access_token_expires)
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
 @app.get("/users/", response_class=HTMLResponse)
@@ -139,10 +128,16 @@ def delete_user_by_email(email: str, db: Session = Depends(get_db)):
 
 
 @app.get("/users/{username}", response_class=HTMLResponse)
-def read_user_by_username(username: str, request: Request, db: Session = Depends(get_db)):
+def read_user_by_username(username: str, request: Request, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    payload = verify_token(token)
+    current_user = crud.get_user_by_username(db, username=payload.get("sub"))
+    if username != current_user.username:
+        raise HTTPException(status_code=403, detail="Not authorized to access this user's data")
+
     db_user = crud.get_user_by_username(db, username=username)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
+
     return templates.TemplateResponse("user.html", {"request": request, "user": db_user})
 
 

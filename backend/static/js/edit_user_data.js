@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function fetchUserData(username) {
-    fetch(`/users/${username}/data`)
+    fetchWithToken(`/users/${username}/data`)
         .then(checkResponseStatus)
         .then(response => response.json())
         .then(setUserData)
@@ -17,6 +17,9 @@ function fetchUserData(username) {
 
 function checkResponseStatus(response) {
     if (!response.ok) {
+        if (response.status === 401) {
+            logout();
+        }
         throw new Error(`HTTP error! status: ${response.status}`);
     }
     return response;
@@ -70,7 +73,7 @@ function saveUserData() {
         weekly_infusions: dates
     };
 
-    fetch(`/users/${document.getElementById('username').value}`, {
+    fetchWithToken(`/users/${document.getElementById('username').value}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData)

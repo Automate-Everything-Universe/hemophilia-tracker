@@ -6,14 +6,19 @@
     <form id="loginForm" action="/login" method="post">
         <div class="mb-4">
             <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-            <input type="text" id="username" name="username" required class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
+            <input type="text" id="username" name="username" required
+                   class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
         </div>
         <div class="mb-4">
             <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-            <input type="password" id="password" name="password" autocomplete="current-password" required class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
+            <input type="password" id="password" name="password" autocomplete="current-password" required
+                   class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
         </div>
         <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Login</button>
     </form>
 </div>
+
+<script src="/static/js/login.js"></script>
+<script src="/static/js/auth.js"></script>
 
 {% endblock %}
