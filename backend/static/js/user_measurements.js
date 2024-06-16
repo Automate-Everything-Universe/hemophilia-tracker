@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     fetchMeasurements();
     document.getElementById('addMeasurementBtn').addEventListener('click', submitMeasurementForm);
-
 });
 
 function fetchMeasurements() {
@@ -13,9 +12,9 @@ function fetchMeasurements() {
             const noMeasurementsMessage = document.getElementById('noMeasurementsMessage');
             measurementsList.innerHTML = '';
             if (data.length === 0) {
-                noMeasurementsMessage.classList.remove('hidden');
+                showNoMeasurementsMessage();
             } else {
-                noMeasurementsMessage.classList.add('hidden');
+                hideNoMeasurementsMessage();
                 data.forEach(measurement => {
                     const measurementItem = document.createElement('div');
                     measurementItem.className = 'p-4 shadow rounded bg-white';
@@ -24,8 +23,7 @@ function fetchMeasurements() {
                             <label for="measurement_date_${measurement.id}" class="block text-sm font-medium text-gray-700"><strong>Measurement Date:</strong> ${new Date(measurement.measurement_date).toLocaleString()}</label>
                             <label for="halving_time_${measurement.id}" class="block text-sm font-medium text-gray-700"><strong>Factor halving time (hours):</strong> ${measurement.halving_time.toFixed(1)}</label>
                             <label for="peak_level_${measurement.id}" class="block text-sm font-medium text-gray-700"><strong>Peak Factor Level After Infusion (%):</strong> ${measurement.peak_level}</label>
-                            <label for="time_elapsed_${measurement.id}" class="block text-sm font-medium text-gray-700"><strong>Time Elapsed Until Factor
-                        Level Measurement (hours):</strong> ${measurement.time_elapsed}</label>
+                            <label for="time_elapsed_${measurement.id}" class="block text-sm font-medium text-gray-700"><strong>Time Elapsed Until Factor Level Measurement (hours):</strong> ${measurement.time_elapsed}</label>
                             <label for="second_level_measurement_${measurement.id}" class="block text-sm font-medium text-gray-700"><strong>Factor Level at Time of Measurement (%):</strong> ${measurement.second_level_measurement}</label>
                             <label for="comment_${measurement.id}" class="block text-sm font-medium text-gray-700"><strong>Comment:</strong> ${measurement.comment || ''}</label>
                         </div>
@@ -37,14 +35,23 @@ function fetchMeasurements() {
         })
         .catch(error => {
             console.error('Error fetching measurements:', error);
-            const noMeasurementsMessage = document.getElementById('noMeasurementsMessage');
-            noMeasurementsMessage.textContent = 'Error fetching measurements. Please try again later.';
-            noMeasurementsMessage.classList.remove('hidden');
+            showNoMeasurementsMessage('Error fetching measurements. Please try again later.');
         });
 }
 
+function showNoMeasurementsMessage(message = 'No measurements found. Please add a measurement to enable predictions and display plots.') {
+    const noMeasurementsMessage = document.getElementById('noMeasurementsMessage');
+    noMeasurementsMessage.textContent = message;
+    noMeasurementsMessage.classList.remove('hidden');
+}
+
+function hideNoMeasurementsMessage() {
+    const noMeasurementsMessage = document.getElementById('noMeasurementsMessage');
+    noMeasurementsMessage.classList.add('hidden');
+}
 
 function submitMeasurementForm(event) {
+    event.preventDefault();
     console.log('Submitting measurement form');
     const username = document.getElementById('username').value;
     const measurementData = {
