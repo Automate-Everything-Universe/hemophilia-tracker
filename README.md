@@ -39,30 +39,31 @@ CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
+    first_name VARCHAR(255),
+    last_name VARCHAR(255)
     email VARCHAR(255),
     peak_level FLOAT(5,2),
     time_elapsed FLOAT(5,2),
     second_level_measurement FLOAT(5,2),
     weekly_infusions text,
-    first_name VARCHAR(255),
-    last_name VARCHAR(255)
 );
 
 CREATE TABLE measurements (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
-    measurement_date VARCHAR(255) NOT NULL,
     peak_level FLOAT(5,2) NOT NULL,
     time_elapsed FLOAT(5,2) NOT NULL,
+    measurement_date VARCHAR(255) NOT NULL,
     second_level_measurement FLOAT(5,2) NOT NULL,
-    decay_constant FLOAT(5,8) NOT NULL;
+    decay_constant FLOAT(13 ,8) NOT NULL,
+    halving_time FLOAT(13 ,8) NOT NULL,
     comment VARCHAR(255),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-CREATE USER 'dragos'@'localhost' IDENTIFIED BY '0000';
+CREATE USER 'user'@'localhost' IDENTIFIED BY '0000';
 
-GRANT ALL PRIVILEGES ON hem_tracker.* TO 'dragos'@'localhost';
+GRANT ALL PRIVILEGES ON hem_tracker.* TO 'user'@'localhost';
 
 FLUSH PRIVILEGES;
 ```
