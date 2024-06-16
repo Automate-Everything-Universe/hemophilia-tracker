@@ -61,9 +61,9 @@ CREATE TABLE measurements (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-CREATE USER 'user'@'localhost' IDENTIFIED BY '0000';
+CREATE USER 'prod_user'@'localhost' IDENTIFIED BY 'password';
 
-GRANT ALL PRIVILEGES ON hem_tracker.* TO 'user'@'localhost';
+GRANT ALL PRIVILEGES ON hem_tracker.* TO 'prod_user'@'localhost';
 
 FLUSH PRIVILEGES;
 ```

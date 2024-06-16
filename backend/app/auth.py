@@ -1,4 +1,7 @@
+import os
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
+
 from fastapi import Depends, HTTPException, status, APIRouter, Form
 from sqlalchemy.orm import Session
 from jose import jwt, JWTError
@@ -6,9 +9,11 @@ from passlib.context import CryptContext
 from .dependencies import get_db
 from . import schemas, crud
 
+load_dotenv()
+
 router = APIRouter()
 
-SECRET_KEY = "your_secret_key"
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
