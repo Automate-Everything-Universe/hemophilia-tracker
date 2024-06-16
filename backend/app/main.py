@@ -13,7 +13,6 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 from sqlalchemy.orm import Session
-from sqlalchemy import text
 
 from passlib.context import CryptContext
 
