@@ -2,6 +2,10 @@
 
 {% block content %}
 <div class="container mx-auto py-8 px-4">
+    <div id="noMeasurementsMessage" class="hidden bg-red-100 text-red-700 p-4 rounded mb-4">
+        No measurements found. Please add a measurement to enable predictions and display plots.
+    </div>
+
     <h2 class="text-2xl font-bold mb-4">User Information</h2>
     <div class="bg-white shadow rounded-lg p-6">
         <div class="p-3 shadow rounded bg-white">
@@ -29,15 +33,13 @@
                    value="{{ user.last_name }}" readonly>
         </div>
         <div class="p-4 shadow rounded bg-white">
-            <label for="peak_level" class="block text-sm font-medium text-gray-700">Peak Factor Level
-                After Infusion (%)</label>
+            <label for="peak_level" class="block text-sm font-medium text-gray-700">Peak Factor Level After Infusion (%)</label>
             <input type="number" id="peak_level" name="peak_level"
                    class="bg-blue-100 text-gray-500 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded"
                    value="{{ user.peak_level }}" readonly>
         </div>
         <div class="p-4 shadow rounded bg-white">
-            <label for="datetimePickerSignup" class="block text-sm font-medium text-gray-700">Scheduled Weekly Infusion
-                Times</label>
+            <label for="datetimePickerSignup" class="block text-sm font-medium text-gray-700">Scheduled Weekly Infusion Times</label>
             <div id="datesBackgroundSignup"
                  class="mt-1 block w-full rounded-md px-4 py-2 text-left text-gray-700 bg-gray-200 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-xs">
                 <div id="selectedDatesSignup" class="flex flex-wrap space-x-2"></div>
@@ -47,8 +49,7 @@
         </div>
         <br>
         <div class="p-4 shadow rounded bg-white hidden" id="add_event">
-            <label for="datetimePickerSignup" class="block text-sm font-medium text-gray-700">Add Infusions
-                Event</label>
+            <label for="datetimePickerSignup" class="block text-sm font-medium text-gray-700">Add Infusions Event</label>
             <input id="datetimePickerSignup" type="text"
                    class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded inline-flex items-center"
                    data-container-id="selectedDatesSignup" data-selected-dates="signupDates" placeholder="New event">
@@ -60,14 +61,11 @@
             </button>
         </div>
         <div class="flex justify-between mt-4">
-            <button id="editButton" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded shadow">Edit
-            </button>
+            <button id="editButton" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded shadow">Edit</button>
             <button id="saveButton" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded shadow hidden"
-                    onclick="saveUserData()">Save changes
-            </button>
+                    onclick="saveUserData()">Save changes</button>
             <button id="cancelButton" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded shadow hidden"
-                    onclick="cancelChanges()">Cancel
-            </button>
+                    onclick="cancelChanges()">Cancel</button>
         </div>
     </div>
 </div>
@@ -92,22 +90,16 @@
 <div class="container mx-auto py-8 px-4">
     <div class="bg-white shadow rounded-lg p-6">
         <h3 class="text-lg font-semibold mb-2">Measurements overview</h3>
-        <small>The number of measurements increase the precision of the factor prediction. </small>
+        <small>The number of measurements increase the precision of the factor prediction.</small>
         <div class="bg-white shadow rounded-lg p-6">
             <label for="mean_halving_time" class="block text-sm font-medium text-gray-700 flex items-center">
                 <strong>Factor halving time for all measurements (hours): <span id="mean_halving_time"
-                                                                                class="block text-sm font-medium text-gray-700  inline-flex items-center"></span></strong>
-
+                                                                               class="block text-sm font-medium text-gray-700  inline-flex items-center"></span></strong>
             </label>
         </div>
         <br>
         <div id="measurementsList"></div>
-        <br>
-        <div id="noMeasurementsMessage" class="hidden text-red-500 text-sm font-semibold">No measurements found. Please
-            add a measurement to enable predictions.
-        </div>
     </div>
-
 </div>
 
 <br>
@@ -122,20 +114,17 @@
                        class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
             </div>
             <div class="p-4 shadow rounded bg-white">
-                <label for="measurement_peak_level" class="block text-sm font-medium text-gray-700">Peak Factor Level
-                        After Infusion (%)</label>
+                <label for="measurement_peak_level" class="block text-sm font-medium text-gray-700">Peak Factor Level After Infusion (%)</label>
                 <input type="number" id="measurement_peak_level" name="measurement_peak_level" step="0.01"
                        class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
             </div>
             <div class="p-4 shadow rounded bg-white">
-                <label for="measurement_time_elapsed" class="block text-sm font-medium text-gray-700">Time Elapsed Until
-                    Factor Level Measurement (hours)</label>
+                <label for="measurement_time_elapsed" class="block text-sm font-medium text-gray-700">Time Elapsed Until Factor Level Measurement (hours)</label>
                 <input type="number" id="measurement_time_elapsed" name="measurement_time_elapsed" step="0.01"
                        class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
             </div>
             <div class="p-4 shadow rounded bg-white">
-                <label for="measurement_second_level_measurement" class="block text-sm font-medium text-gray-700">Factor
-                    Level at Time of Measurement (%)</label>
+                <label for="measurement_second_level_measurement" class="block text-sm font-medium text-gray-700">Factor Level at Time of Measurement (%)</label>
                 <input type="number" id="measurement_second_level_measurement"
                        name="measurement_second_level_measurement" step="0.01"
                        class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
@@ -146,9 +135,7 @@
                           class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded"></textarea>
             </div>
         </form>
-        <button id="addMeasurementBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-2 rounded">Add
-            Measurement
-        </button>
+        <button id="addMeasurementBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-2 rounded">Add Measurement</button>
     </div>
 </div>
 
