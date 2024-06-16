@@ -3,19 +3,18 @@
 {% block content %}
 <body class="bg-gray-100">
 <div class="container mx-auto py-8 px-4">
-    <h2 class="text-2xl font-bold mb-4">Factor Level Overview</h2>
     <div class="bg-white shadow rounded-lg p-6">
-        <h3 class="text-lg font-semibold mb-2">Current factor level</h3>
+        <h3 class="text-lg font-semibold mb-2">Current factor level (percentage)</h3>
         <canvas id="factorLevelDoughnutChart"></canvas>
     </div>
     <br>
     <div class="bg-white shadow rounded-lg p-6">
-        <h3 class="text-lg font-semibold mb-2">Weekly factor level</h3>
+        <h3 class="text-lg font-semibold mb-2">Week overview</h3>
         <div id="factorLevelChart" class="space-y-4 shadow rounded bg-white"></div>
     </div>
     <br>
     <div class="bg-white shadow rounded-lg p-6">
-         <h2 class="text-2xl font-bold mb-4">Halving time</h2>
+        <h3 class="text-lg font-semibold mb-2">Halving time</h3>
         <label for="mean_halving_time" class="block text-sm font-medium text-gray-700 flex items-center">
             <strong>Factor halving time (hours):
                 <span id="mean_halving_time"
@@ -24,12 +23,25 @@
         </label>
     </div>
 
+    CREATE TABLE measurements (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    peak_level FLOAT(5,2) NOT NULL,
+    time_elapsed FLOAT(5,2) NOT NULL,
+    measurement_date VARCHAR(255) NOT NULL,
+    second_level_measurement FLOAT(5,2) NOT NULL,
+    decay_constant FLOAT(13 ,8) NOT NULL,
+    halving_time FLOAT(13 ,8) NOT NULL,
+    comment VARCHAR(255),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
     <br>
     <div class="space-y-4">
         <div class="bg-white shadow rounded-lg p-6">
             <h3 class="text-lg font-semibold mb-2">Value Context</h3>
             <p class="text-gray-700 mb-3">
-                Right after an infusion SJ's <strong> peak Factor VIII levels </strong> reach up to <strong> a peak of
+                Right after an 500 UI Elocta infusion SJ's  peak <strong> Factor VIII levels </strong> reach up to <strong> a peak of
                 60%</strong>.
                 <br>
                 This maximum level is observed immediately post-infusion and is essential for understanding the efficacy
@@ -123,7 +135,7 @@
 
     <div class="space-y-4">
         <div class="bg-white shadow rounded-lg p-6">
-            <h2 class="text-lg font-semibold mb-2">Create a profile with your data by signing up.</h2>
+            <h2 class="text-lg font-semibold mb-2">Create a custom profile with your data by signing up</h2>
             <button id="signUp" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded shadow mt-4">Sign up
             </button>
         </div>

@@ -24,8 +24,9 @@ function fetchMeasurements() {
                             <label for="measurement_date_${measurement.id}" class="block text-sm font-medium text-gray-700"><strong>Measurement Date:</strong> ${new Date(measurement.measurement_date).toLocaleString()}</label>
                             <label for="halving_time_${measurement.id}" class="block text-sm font-medium text-gray-700"><strong>Factor halving time (hours):</strong> ${measurement.halving_time.toFixed(1)}</label>
                             <label for="peak_level_${measurement.id}" class="block text-sm font-medium text-gray-700"><strong>Peak Factor Level After Infusion (%):</strong> ${measurement.peak_level}</label>
-                            <label for="time_elapsed_${measurement.id}" class="block text-sm font-medium text-gray-700"><strong>Time Elapsed (hours):</strong> ${measurement.time_elapsed}</label>
-                            <label for="second_level_measurement_${measurement.id}" class="block text-sm font-medium text-gray-700"><strong>Second Level Measurement (%):</strong> ${measurement.second_level_measurement}</label>
+                            <label for="time_elapsed_${measurement.id}" class="block text-sm font-medium text-gray-700"><strong>Time Elapsed Until Factor
+                        Level Measurement (hours):</strong> ${measurement.time_elapsed}</label>
+                            <label for="second_level_measurement_${measurement.id}" class="block text-sm font-medium text-gray-700"><strong>Factor Level at Time of Measurement (%):</strong> ${measurement.second_level_measurement}</label>
                             <label for="comment_${measurement.id}" class="block text-sm font-medium text-gray-700"><strong>Comment:</strong> ${measurement.comment || ''}</label>
                         </div>
                         <button onclick="deleteMeasurement(${measurement.id})" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded">Delete</button>
