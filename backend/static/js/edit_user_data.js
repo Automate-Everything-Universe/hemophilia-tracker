@@ -133,6 +133,7 @@ function setEditButtonHandler() {
         document.querySelectorAll('.ml-2').forEach(showElement);
         showElement(document.getElementById('saveButton'));
         showElement(document.getElementById('cancelButton'));
+        showElement(document.getElementById('deleteButton'));
         showElement(document.getElementById('add_event'));
         hideElement(document.getElementById('editButton'));
     });

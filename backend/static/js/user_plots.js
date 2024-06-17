@@ -5,11 +5,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function fetchUserDataForPlot(username) {
     fetch(`/user-data/${username}`)
-        .then(response => response.json())
+       .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(data => {
             updateFactorLevels(data);
         })
-        .catch(error => console.error('Error fetching user data:', error));
+        .catch(error => {
+            if (error.message === 'Network response was not ok') {
+                    alert('No measurements found for this user. Please add a measurement to proceed.');
+                }
+            else {
+                alert('An unexpected error occurred. Please try again later.');
+            }
+            console.error('Error fetching user data:', error);
+        });
 }
 
 function updateFactorLevels(data) {
@@ -28,10 +41,9 @@ function updateFactorLevels(data) {
     })
     .then(response => response.json())
     .then(data => {
-        plotFactorLevelChart(data);
         createOrUpdateDoughnutChart(data);
+        plotNewFactorLevelChart(data);
         addHalvingTime(data);
     })
     .catch(error => console.error('Error updating data:', error));
 }
-

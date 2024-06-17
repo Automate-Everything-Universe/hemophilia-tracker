@@ -7,11 +7,11 @@
     display: block; /* Ensure the margin auto works on the canvas */
 }
 
-#demoChart {
+.chart-size {
   max-width: 400px;
   max-height: 400px;
   width: 100%;
-  height: auto;
+  height: 100%;
   margin: 0 auto; /* Center align the chart horizontally */
   display: block; /* Ensure the margin auto works on the canvas */
 }

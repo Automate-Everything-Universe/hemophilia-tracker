@@ -61,13 +61,20 @@ def get_user_by_email(db: Session, email: str):
     return db.query(models.User).filter(models.User.email == email).first()
 
 
-def delete_user_by_username(db: Session, username: str):
+def delete_user_and_measurements_by_username(db: Session, username: str):
     db_user = db.query(models.User).filter(models.User.username == username).first()
     if db_user:
+        delete_user_measurements(db, db_user)
         db.delete(db_user)
         db.commit()
         return True
     return False
+
+
+def delete_user_measurements(db: Session, db_user: models.User):
+    measurements = db_user.measurements
+    for measurement in measurements:
+        db.delete(measurement)
 
 
 def delete_user_by_email(db: Session, email: str):
