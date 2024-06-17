@@ -150,12 +150,12 @@ def update_user(username: str, user: schemas.UserUpdate, db: Session = Depends(g
     return db_user
 
 
-@app.delete("/users/{username}", response_class=HTMLResponse)
+@app.delete("/users/{username}", response_class=JSONResponse)
 def delete_user_by_username(username: str, db: Session = Depends(get_db)):
-    success = crud.delete_user_by_username(db, username)
+    success = crud.delete_user_and_measurements_by_username(db, username)
     if not success:
         raise HTTPException(status_code=404, detail="User not found")
-    return {"detail": "User deleted"}
+    return JSONResponse(content={"detail": "User deleted"})
 
 
 @app.get("/users/{username}/data", response_model=schemas.User)
