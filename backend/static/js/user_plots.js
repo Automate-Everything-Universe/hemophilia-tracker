@@ -28,8 +28,8 @@ function updateFactorLevels(data) {
     })
     .then(response => response.json())
     .then(data => {
-        plotFactorLevelChart(data);
         createOrUpdateDoughnutChart(data);
+        plotNewFactorLevelChart(data);
         addHalvingTime(data);
     })
     .catch(error => console.error('Error updating data:', error));

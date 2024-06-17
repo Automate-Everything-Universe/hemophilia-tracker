@@ -60,8 +60,9 @@ async function updateFactorLevels() {
         });
 
         const updateData = await updateResponse.json();
-        plotFactorLevelChart(updateData);
+        plotNewFactorLevelChart(updateData);
         createOrUpdateDoughnutChart(updateData);
+
         addHalvingTime(updateData);
 
     } catch (error) {
