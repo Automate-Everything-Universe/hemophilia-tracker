@@ -19,8 +19,8 @@ let dates = [];
 
 function addDateTime() {
     const datetimePicker = document.getElementById('datetimePicker');
-    if (datetimePicker.value) {
-        dates.push(datetimePicker.value);
+    if (datetimePicker.innerText) {
+        dates.push(datetimePicker.innerText);
         sortDates();
         updateDateList();
         datetimePicker._flatpickr.clear();
