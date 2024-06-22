@@ -23,7 +23,6 @@ function addDateTime() {
         dates.push(datetimePicker.innerText);
         sortDates();
         updateDateList();
-        datetimePicker._flatpickr.clear();
         datetimePicker.innerText = `New event`;
     }
 

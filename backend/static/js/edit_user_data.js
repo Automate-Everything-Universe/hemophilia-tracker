@@ -116,11 +116,10 @@ function showElement(element) {
 
 function addDateTimeSignup() {
     const datetimePicker = document.getElementById('datetimePickerSignup');
-    if (datetimePicker.value) {
-        dates.push(datetimePicker.value);
+    if (datetimePicker.innerText) {
+        dates.push(datetimePicker.innerText);
         sortDates();
         updateSignupDateList();
-        datetimePicker._flatpickr.clear();
         datetimePicker.innerText = `New event`;
     }
 
