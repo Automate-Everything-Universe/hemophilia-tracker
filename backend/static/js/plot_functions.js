@@ -123,7 +123,7 @@ function createOrUpdateDoughnutChart(data) {
     }
 }
 const lineCtx = document.getElementById('factorLevelCurveChart').getContext('2d');
-let factorLevelChart;
+let factorLevelChart = null;
 
 function plotNewFactorLevelChart(data) {
     const hours = data.hours.map(hour => new Date(new Date(data.start_of_week).getTime() + hour * 3600000));
@@ -133,6 +133,17 @@ function plotNewFactorLevelChart(data) {
 
     if (factorLevelChart) {
         factorLevelChart.destroy();
+    }
+
+    // Calculate the maximum level in the dataset
+    const maxLevel = Math.max(...levels);
+
+    // Determine the maximum value for the y-axis
+    let yAxisMax;
+    if (maxLevel <= 100) {
+        yAxisMax = 100;
+    } else {
+        yAxisMax = (maxLevel * 1.1).toFixed(0);
     }
 
     factorLevelChart = new Chart(lineCtx, {
@@ -145,7 +156,7 @@ function plotNewFactorLevelChart(data) {
                 borderColor: 'rgb(75, 192, 192)',
                 fill: false,
                 lineTension: 0.1,
-                 pointStyle: false,
+                pointStyle: false,
             },
             {
                 label: `Current Factor Level (${factorLevelYValue.toFixed(2)}%)`,
@@ -186,7 +197,7 @@ function plotNewFactorLevelChart(data) {
                         text: 'Factor Level (%)'
                     },
                     min: 0,
-                    max: 100,
+                    max: yAxisMax, // Set the dynamic max value here
                     ticks: {
                         callback: function(value) {
                             return value + '%';
