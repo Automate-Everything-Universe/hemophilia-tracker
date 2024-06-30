@@ -5,6 +5,11 @@
     <div id="noMeasurementsMessage" class="hidden bg-red-100 text-red-700 p-4 rounded mb-4">
         No measurements found. Please add a measurement to enable predictions and display plots.
     </div>
+    <div id="logout" class="hidden bg-red-100 text-red-700 p-4 rounded mb-4">
+        <button id="logoutButton" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded shadow"
+                onclick="logout()">Logout
+        </button>
+    </div>
 
     <h2 class="text-2xl font-bold mb-4">User Information</h2>
     <div class="bg-white shadow rounded-lg p-6">
@@ -72,7 +77,7 @@
             <button id="cancelButton" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded shadow hidden"
                     onclick="cancelChanges()">Cancel
             </button>
-              <button id="deleteButton" class="bg-red-700 hover:bg-red-800 text-white px-4 py-2 rounded shadow hidden"
+            <button id="deleteButton" class="bg-red-700 hover:bg-red-800 text-white px-4 py-2 rounded shadow hidden"
                     onclick="deleteUser()">Delete User
             </button>
         </div>
@@ -162,5 +167,4 @@
 <script src="/static/js/user_plots.js"></script>
 <script src="/static/js/edit_user_data.js"></script>
 <script src="/static/js/delete_user.js"></script>
-<script src="/static/js/modules/flatpickr_setup.js"></script>
 {% endblock %}

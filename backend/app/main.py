@@ -65,8 +65,11 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     if db_user is None or not crud.verify_password(form_data.password, db_user.password):
         raise HTTPException(status_code=400, detail="Invalid username or password")
 
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(data={"sub": db_user.username}, expires_delta=access_token_expires)
+    access_token_expires = timedelta(minutes=30)
+    access_token = create_access_token(
+        data={"sub": db_user.username},
+        expires_delta=access_token_expires
+    )
     return {"access_token": access_token, "token_type": "bearer"}
 
 
@@ -126,19 +129,18 @@ def delete_user_by_email(email: str, db: Session = Depends(get_db)):
     return {"detail": "User deleted"}
 
 
-@app.get("/users/{username}", response_class=HTMLResponse)
-def read_user_by_username(username: str, request: Request, token: str = Depends(oauth2_scheme),
-                          db: Session = Depends(get_db)):
+@app.get("/user/{username}", response_class=HTMLResponse)
+def read_user_page(username: str, request: Request, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     payload = verify_token(token)
-    current_user = crud.get_user_by_username(db, username=payload.get("sub"))
-    if username != current_user.username:
+    if username != payload.get("sub"):
         raise HTTPException(status_code=403, detail="Not authorized to access this user's data")
-
     db_user = crud.get_user_by_username(db, username=username)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
 
-    return templates.TemplateResponse("user.html", {"request": request, "user": db_user})
+    # Render the template to a string
+    html_content = templates.TemplateResponse("user.html", {"request": request, "user": db_user}).body.decode('utf-8')
+    return HTMLResponse(content=html_content)
 
 
 @app.put("/users/{username}", response_model=schemas.User)
@@ -229,6 +231,15 @@ def delete_measurement(username: str, measurement_id: int, db: Session = Depends
     db.delete(db_measurement)
     db.commit()
     return db_measurement
+
+
+@app.post("/validate-token")
+async def validate_token(token: str = Depends(oauth2_scheme)):
+    try:
+        payload = verify_token(token)
+        return {"valid": True, "username": payload.get("sub")}
+    except:
+        return {"valid": False}
 
 
 @app.get("/disclaimer", response_class=HTMLResponse)
