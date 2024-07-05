@@ -1,29 +1,40 @@
 document.addEventListener('DOMContentLoaded', function () {
-    flatpickr("#datetimePicker", {
-        enableTime: true,
-        dateFormat: "l h:i K", // Monday 03:30 PM
-        weekNumbers: true,
-        time_24hr: false,
-        position: "above",
-        onChange: function(selectedDates, dateStr, instance) {
-                    const datetimePickerBtn = document.getElementById('datetimePicker');
-                    datetimePickerBtn.innerText = dateStr;
+    const datetimePickerBtn = document.getElementById('datetimePicker');
+    const addDateTimeBtn = document.getElementById('addDateTime');
 
-                    const addDateTimeBtn = document.getElementById('addDateTime');
-                    addDateTimeBtn.classList.remove('hidden');
-                }
+    datetimePicker.addEventListener('change', function() {
+        if (datetimePickerBtn.value) {
+            const dateStr = formatDateTime(datetimePickerBtn.value);
+            datetimePickerBtn.dataset.dateStr = dateStr;
+            addDateTimeBtn.classList.remove('hidden');
+        } else {
+        console.error('Buttons not found');
+    }
     });
 });
 
 let dates = [];
 
+function formatDateTime(value) {
+    const date = new Date(value);
+    const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const day = daysOfWeek[date.getDay()];
+    let hours = date.getHours();
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    return `${day} ${hours}:${minutes} ${ampm}`;
+}
+
 function addDateTime() {
-    const datetimePicker = document.getElementById('datetimePicker');
-    if (datetimePicker.innerText) {
-        dates.push(datetimePicker.innerText);
+    const datetimePickerBtn = document.getElementById('datetimePicker');
+    if (datetimePickerBtn.dataset.dateStr) {
+        dates.push(datetimePickerBtn.dataset.dateStr);
         sortDates();
         updateDateList();
-        datetimePicker.innerText = `New event`;
+        datetimePickerBtn.value = '';
+        datetimePickerBtn.dataset.dateStr = '';
     }
 
     const addDateTimeBtn = document.getElementById('addDateTime');
@@ -62,4 +73,3 @@ function setInitialDates(initialDates) {
 function getRefillTimes() {
     return dates;
 }
-

@@ -1,18 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     fetchDefaultValues();
-
     document.getElementById('updateButton').addEventListener('click', updateFactorLevels);
-    const datetimePickerBtn = document.getElementById('datetimePicker');
-
-    const addDateTimeBtn = document.getElementById('addDateTime');
-
-    if (datetimePickerBtn && addDateTimeBtn) {
-        datetimePickerBtn.addEventListener('click', function() {
-            addDateTimeBtn.classList.remove('hidden');
-        });
-    } else {
-        console.error('Buttons not found'); // Debugging
-    }
 });
 
 async function fetchDefaultValues() {
