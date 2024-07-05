@@ -1,6 +1,22 @@
 document.addEventListener('DOMContentLoaded', function () {
     fetchDefaultValues();
+
     document.getElementById('updateButton').addEventListener('click', updateFactorLevels);
+
+    const datetimePickerBtn = document.getElementById('datetimePicker');
+    const addDateTimeBtn = document.getElementById('addDateTime');
+
+    if (datetimePickerBtn && addDateTimeBtn) {
+        datetimePickerBtn.addEventListener('change', function() {
+            if (datetimePickerBtn.value) {
+                const dateStr = dateSelection.formatDateTime(datetimePickerBtn.value);
+                datetimePickerBtn.dataset.dateStr = dateStr;
+                addDateTimeBtn.classList.remove('hidden');
+            }
+        });
+    } else {
+        console.error('Buttons not found'); // Debugging
+    }
 });
 
 async function fetchDefaultValues() {
@@ -12,7 +28,7 @@ async function fetchDefaultValues() {
         document.getElementById('second_level_measurement').value = data.second_level_measurement;
         decayConstant = data.decay_constant;
         peakLevel = data.peak_level;
-        setInitialDates(data.refill_times);
+        dateSelection.setInitialDates(data.refill_times);
         updateFactorLevels();
     } catch (error) {
         console.error('Error fetching default data:', error);
@@ -20,7 +36,7 @@ async function fetchDefaultValues() {
 }
 
 async function updateFactorLevels() {
-    const refillTimes = getRefillTimes();
+    const refillTimes = dateSelection.getRefillTimes();
 
     const localTime = new Date();
     const currentTime = localTime.toLocaleString('en-US', {
