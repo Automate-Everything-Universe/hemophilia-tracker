@@ -88,6 +88,8 @@
         setInitialDates,
         getRefillTimes,
         removeDate,
-        formatDateTime
+        formatDateTime,
+        getDates: function() { return dateSelectionDates; },
+        setDates: function(dates) { dateSelectionDates = dates; }
     };
 })();
