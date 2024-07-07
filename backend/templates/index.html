@@ -10,7 +10,7 @@
     <br>
     <div class="bg-white shadow rounded-lg p-6">
         <h3 class="text-lg font-semibold mb-2">Week overview</h3>
-        <canvas id="factorLevelCurveChart"> class="chart-size" </canvas>
+        <canvas id="factorLevelCurveChart"> class="chart-size"</canvas>
     </div>
     <br>
     <div class="bg-white shadow rounded-lg p-6">
@@ -84,6 +84,7 @@
                 </div>
 
             </div>
+            <!--            #from here-->
             <div class="space-y-4">
                 <h3 class="text-lg font-semibold mb-2">Weekly Schedule</h3>
                 <div class="p-4 shadow rounded bg-white">
@@ -96,24 +97,22 @@
                     <small class="text-gray-600">Past or future infusion events</small>
                 </div>
                 <br>
-
                 <div class="p-4 shadow rounded bg-white">
                     <label for="datetimepicker" class="block text-sm font-medium text-gray-700">Add Infusions
                         Event</label>
-                    <button id="datetimePicker"
-                            class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded inline-flex items-center">
-                        New event
-                    </button>
+                    <input type="datetime-local" id="datetimePicker" name="measurement_date"
+                           class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded">
                     <br>
                     <small class="text-gray-600">Select a date and time for a new infusion event and add to the
                         list.</small>
                     <br>
-                    <button id="addDateTime" onclick="addDateTime()"
+                    <button id="addDateTime" onclick="dateSelection.addDateTime()"
                             class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-2 rounded shadow hidden">Add
                         Event
                     </button>
                 </div>
             </div>
+            <!--            #to here-->
         </div>
         <button id="updateButton" class="bg-red-500 hover:bg-blue-600 text-white px-4 py-2 rounded shadow mt-4">Update
             Plot
@@ -130,8 +129,8 @@
     </div>
 </div>
 </body>
+<script src="/static/js/sort_dates.js"></script>
 <script src="/static/js/halving_time.js"></script>
-<script src="/static/js/signup_button.js"></script>
 <script src="/static/js/sort_dates.js"></script>
 <script src="/static/js/plot_functions.js"></script>
 <script src="/static/js/date_selection.js"></script>

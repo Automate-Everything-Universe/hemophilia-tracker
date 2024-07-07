@@ -1,8 +1,7 @@
 (function() {
-    let dates = [];
+    let isEditMode = false;
 
     document.addEventListener('DOMContentLoaded', function () {
-        setupFlatpickr();
         const username = document.getElementById('username').value;
         fetchUserData(username);
         setEditButtonHandler();
@@ -10,23 +9,6 @@
         setCancelButtonHandler();
         setupAddDateTimeButton();
     });
-
-    function setupFlatpickr() {
-        flatpickr("#datetimePickerSignup", {
-            enableTime: true,
-            dateFormat: "l h:i K", // Monday 03:30 PM
-            weekNumbers: true,
-            time_24hr: false,
-            position: "above",
-            onChange: function (selectedDates, dateStr, instance) {
-                const datetimePickerBtn = document.getElementById('datetimePickerSignup');
-                datetimePickerBtn.innerText = dateStr;
-
-                const addDateTimeBtn = document.getElementById('addDateTimeSignup');
-                addDateTimeBtn.classList.remove('hidden');
-            }
-        });
-    }
 
     function fetchUserData(username) {
         fetchWithToken(`/users/${username}/data`)
@@ -51,33 +33,9 @@
         document.getElementById('first_name').value = data.first_name;
         document.getElementById('last_name').value = data.last_name;
         document.getElementById('peak_level').value = data.peak_level;
-        setInitialDates(data.weekly_infusions);
-    }
-
-    function setInitialDates(initialDates) {
-        dates = initialDates.split(', ');
-        updateSignupDateList();
-    }
-
-    function updateSignupDateList() {
-        const selectedDatesDiv = document.getElementById('selectedDatesSignup');
-        selectedDatesDiv.innerHTML = '';
-
-        dates.forEach((date, index) => {
-            const dateTag = document.createElement('div');
-            dateTag.className = 'bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded inline-flex items-center';
-            dateTag.innerHTML = `
-                ${date}
-                <button type="button" onclick="window.removeSignupDate(${index})" class="ml-2 bg-transparent hover:text-red-500 text-red-400">✖</button>
-            `;
-            selectedDatesDiv.appendChild(dateTag);
-        });
-
-        if (!isEditMode()) {
-            document.querySelectorAll('.ml-2').forEach(showElement);
-        } else {
-            document.querySelectorAll('.ml-2').forEach(hideElement);
-        }
+        dateSelection.setInitialDates(data.weekly_infusions.split(', '));
+        toggleRemoveButtons();
+        hideInputElements();
     }
 
     function saveUserData() {
@@ -86,7 +44,7 @@
             first_name: document.getElementById('first_name').value,
             last_name: document.getElementById('last_name').value,
             peak_level: parseFloat(document.getElementById('peak_level').value),
-            weekly_infusions: dates
+            weekly_infusions: dateSelection.getRefillTimes()
         };
 
         fetchWithToken(`/users/${document.getElementById('username').value}`, {
@@ -106,6 +64,7 @@
         const username = document.getElementById('username').value;
         fetchUserData(username);
         hideInputElements();
+        toggleRemoveButtons();
     }
 
     function hideInputElements() {
@@ -131,7 +90,7 @@
     }
 
     function setupAddDateTimeButton() {
-        document.getElementById('addDateTimeSignup').addEventListener('click', addDateTimeSignup);
+        document.getElementById('addDateTime').addEventListener('click', dateSelection.addDateTime);
     }
 
     function setEditButtonHandler() {
@@ -143,6 +102,8 @@
             showElement(document.getElementById('deleteButton'));
             showElement(document.getElementById('add_event'));
             hideElement(document.getElementById('editButton'));
+            isEditMode = true;
+            toggleRemoveButtons();
         });
     }
 
@@ -152,48 +113,44 @@
     }
 
     function setSaveButtonHandler() {
-        document.getElementById('saveButton').addEventListener('click', saveUserData);
+        document.getElementById('saveButton').addEventListener('click', function() {
+            saveUserData();
+            isEditMode = false;
+            toggleRemoveButtons();
+        });
     }
 
     function setCancelButtonHandler() {
-        document.getElementById('cancelButton').addEventListener('click', cancelChanges);
+        document.getElementById('cancelButton').addEventListener('click', function() {
+            cancelChanges();
+            isEditMode = false;
+            toggleRemoveButtons();
+        });
     }
 
     function handleError(error) {
         console.error('Error:', error);
     }
 
-    function isEditMode() {
-        return !document.getElementById('editButton').classList.contains('hidden');
-    }
+    function toggleRemoveButtons() {
 
-    function addDateTimeSignup() {
-        const datetimePicker = document.getElementById('datetimePickerSignup');
-        if (datetimePicker.value) {
-            dates.push(datetimePicker.value);
-            sortDates();
-            updateSignupDateList();
-            datetimePicker.innerText = `New event`;
-        }
-
-        const addDateTimeBtn = document.getElementById('addDateTimeSignup');
-        if (addDateTimeBtn) {
-            addDateTimeBtn.classList.add('hidden');
-        }
-    }
-
-    function sortDates() {
-        dates.sort((a, b) => new Date(a) - new Date(b));
+        const removeButtons = document.querySelectorAll('.remove-date-button');
+        removeButtons.forEach(button => {
+            if (isEditMode) {
+                button.classList.remove('hidden');
+            } else {
+                button.classList.add('hidden');
+            }
+        });
     }
 
     // Expose necessary functions to the global scope
     window.removeSignupDate = function(index) {
-        dates.splice(index, 1);
-        sortDates();
-        updateSignupDateList();
+        dateSelection.removeDate(index);
+        toggleRemoveButtons();
     };
 
     window.getSignupRefillTimes = function() {
-        return dates;
+        return dateSelection.getRefillTimes();
     };
 })();
