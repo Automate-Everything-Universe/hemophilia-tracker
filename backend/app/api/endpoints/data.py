@@ -73,7 +73,7 @@ def generate_refill_hours(refill_times: List[str], start_of_week: datetime) -> L
 def generate_refill_times_in_hour_format(refill_times_in_datetime_format, start_of_week):
     refill_hours_in_numbers = []
     for refill_time_in_datetime in refill_times_in_datetime_format:
-        refill_time_in_hour = (refill_time_in_datetime - start_of_week).total_seconds() / 3600
+        refill_time_in_hour = float(f"{(refill_time_in_datetime - start_of_week).total_seconds() / 3600:.1f}") # one decimal float
         refill_hours_in_numbers.append(refill_time_in_hour)
     return refill_hours_in_numbers
 
