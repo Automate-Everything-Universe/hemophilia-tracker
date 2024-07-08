@@ -190,7 +190,6 @@ def create_measurement(username: str, measurement: schemas.MeasurementCreate, db
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
 
-    measurement_date = datetime.strptime(measurement.measurement_date, "%Y-%m-%dT%H:%M")
 
     decay_constant = calculate_decay_constant(peak_level=measurement.peak_level,
                                               measured_level=measurement.second_level_measurement,
@@ -199,7 +198,6 @@ def create_measurement(username: str, measurement: schemas.MeasurementCreate, db
 
     db_measurement = models.Measurement(
         user_id=db_user.id,
-        measurement_date=measurement_date,
         peak_level=measurement.peak_level,
         time_elapsed=measurement.time_elapsed,
         second_level_measurement=measurement.second_level_measurement,

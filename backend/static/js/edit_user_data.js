@@ -68,17 +68,28 @@
     }
 
     function hideInputElements() {
-        document.querySelectorAll('.p-4 input').forEach(setInputReadonly);
-        document.querySelectorAll('.ml-2').forEach(hideElement);
+        setInputReadonly(document.getElementById('email'));
+        setInputReadonly(document.getElementById('first_name'));
+        setInputReadonly(document.getElementById('last_name'));
+        setInputReadonly(document.getElementById('peak_level'));
+
+        document.querySelectorAll('.remove-date-button').forEach(hideElement);
+
         hideElement(document.getElementById('saveButton'));
         hideElement(document.getElementById('add_event'));
         hideElement(document.getElementById('cancelButton'));
+        hideElement(document.getElementById('deleteButton'));
         showElement(document.getElementById('editButton'));
     }
 
     function setInputReadonly(input) {
         input.setAttribute('readonly', 'true');
         input.classList.replace('text-blue-800', 'text-gray-500');
+    }
+
+    function setInputEditable(input) {
+        input.removeAttribute('readonly');
+        input.classList.replace('text-gray-500', 'text-blue-800');
     }
 
     function hideElement(element) {
@@ -95,21 +106,21 @@
 
     function setEditButtonHandler() {
         document.getElementById('editButton').addEventListener('click', function () {
-            document.querySelectorAll('.p-4 input').forEach(makeInputEditable);
-            document.querySelectorAll('.ml-2').forEach(showElement);
+            setInputEditable(document.getElementById('email'));
+            setInputEditable(document.getElementById('first_name'));
+            setInputEditable(document.getElementById('last_name'));
+            setInputEditable(document.getElementById('peak_level'));
+
+            document.querySelectorAll('.remove-date-button').forEach(showElement);
+
             showElement(document.getElementById('saveButton'));
             showElement(document.getElementById('cancelButton'));
             showElement(document.getElementById('deleteButton'));
             showElement(document.getElementById('add_event'));
             hideElement(document.getElementById('editButton'));
-            isEditMode = true;
-            toggleRemoveButtons();
-        });
-    }
 
-    function makeInputEditable(input) {
-        input.removeAttribute('readonly');
-        input.classList.replace('text-gray-500', 'text-blue-800');
+            isEditMode = true;
+        });
     }
 
     function setSaveButtonHandler() {
@@ -133,7 +144,6 @@
     }
 
     function toggleRemoveButtons() {
-
         const removeButtons = document.querySelectorAll('.remove-date-button');
         removeButtons.forEach(button => {
             if (isEditMode) {
@@ -144,7 +154,6 @@
         });
     }
 
-    // Expose necessary functions to the global scope
     window.removeSignupDate = function(index) {
         dateSelection.removeDate(index);
         toggleRemoveButtons();

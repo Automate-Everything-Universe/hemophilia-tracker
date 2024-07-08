@@ -23,7 +23,6 @@ class Measurement(Base):
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    measurement_date = Column(String(100), nullable=False)
     peak_level = Column(Float(2), nullable=False)
     time_elapsed = Column(Float(2), nullable=False)
     second_level_measurement = Column(Float(2), nullable=False)

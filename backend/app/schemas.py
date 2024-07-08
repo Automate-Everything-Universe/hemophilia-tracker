@@ -57,7 +57,6 @@ class UserPlotsData(BaseModel):
 
 
 class MeasurementBase(BaseModel):
-    measurement_date: Optional[str] = None
     peak_level: Optional[float] = None
     time_elapsed: Optional[float] = None
     second_level_measurement: Optional[float] = None
@@ -67,7 +66,6 @@ class MeasurementBase(BaseModel):
 
 
 class MeasurementCreate(MeasurementBase):
-    measurement_date: Optional[str] = None
     peak_level: Optional[float] = None
     time_elapsed: Optional[float] = None
     second_level_measurement: Optional[float] = None
