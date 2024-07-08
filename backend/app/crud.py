@@ -115,7 +115,6 @@ def create_measurement(db: Session, measurement: schemas.MeasurementCreate, user
                                               measurement.time_elapsed)
     db_measurement = models.Measurement(
         user_id=user_id,
-        measurement_date=measurement.measurement_date,
         peak_level=measurement.peak_level,
         time_elapsed=measurement.time_elapsed,
         second_level_measurement=measurement.second_level_measurement,

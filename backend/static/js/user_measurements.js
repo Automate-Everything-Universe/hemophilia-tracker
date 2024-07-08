@@ -20,7 +20,6 @@ function fetchMeasurements() {
                     measurementItem.className = 'p-4 shadow rounded bg-white';
                     measurementItem.innerHTML = `
                         <div class="mb-4">
-                            <label for="measurement_date_${measurement.id}" class="block text-sm font-medium text-gray-700"><strong>Measurement Date:</strong> ${new Date(measurement.measurement_date).toLocaleString()}</label>
                             <label for="halving_time_${measurement.id}" class="block text-sm font-medium text-gray-700"><strong>Factor halving time (hours):</strong> ${measurement.halving_time.toFixed(1)}</label>
                             <label for="peak_level_${measurement.id}" class="block text-sm font-medium text-gray-700"><strong>Peak Factor Level After Infusion (%):</strong> ${measurement.peak_level}</label>
                             <label for="time_elapsed_${measurement.id}" class="block text-sm font-medium text-gray-700"><strong>Time Elapsed Until Factor Level Measurement (hours):</strong> ${measurement.time_elapsed}</label>
@@ -55,7 +54,6 @@ function submitMeasurementForm(event) {
     console.log('Submitting measurement form');
     const username = document.getElementById('username').value;
     const measurementData = {
-        measurement_date: document.getElementById('measurement_date').value,
         peak_level: parseFloat(document.getElementById('measurement_peak_level').value),
         time_elapsed: parseFloat(document.getElementById('measurement_time_elapsed').value),
         second_level_measurement: parseFloat(document.getElementById('measurement_second_level_measurement').value),
@@ -70,7 +68,12 @@ function submitMeasurementForm(event) {
         },
         body: JSON.stringify(measurementData)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => { throw new Error(text) });
+        }
+        return response.json();
+    })
     .then(data => {
         fetchMeasurements();
         document.getElementById('measurementForm').reset();
