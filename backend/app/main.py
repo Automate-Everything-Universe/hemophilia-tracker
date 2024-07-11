@@ -1,8 +1,9 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 from pathlib import Path
 from typing import List
+import requests
 
-from fastapi import FastAPI, Depends, HTTPException, Form, APIRouter
+from fastapi import FastAPI, Depends, HTTPException, Form, APIRouter, Body
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
@@ -190,7 +191,6 @@ def create_measurement(username: str, measurement: schemas.MeasurementCreate, db
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
 
-
     decay_constant = calculate_decay_constant(peak_level=measurement.peak_level,
                                               measured_level=measurement.second_level_measurement,
                                               time_elapsed=measurement.time_elapsed)
@@ -241,8 +241,38 @@ async def validate_token(token: str = Depends(oauth2_scheme)):
 
 
 @app.get("/disclaimer", response_class=HTMLResponse)
-def get_login_form(request: Request):
+def show_disclaimer(request: Request):
     return templates.TemplateResponse("disclaimer.html", {"request": request})
+
+
+@app.get("/contact", response_class=HTMLResponse)
+def show_contact_form(request: Request):
+    return templates.TemplateResponse("contact.html", {"request": request})
+
+
+@app.post("/submit_contact_form")
+async def submit_contact_form(
+    email: str = Form(...),
+    message: str = Form(...)
+):
+    url = "https://formspree.io/f/xanwnqyw"
+    data = {"email": email, "message": message}
+    headers = {"Content-Type": "application/json"}
+
+    try:
+        response = requests.post(url, json=data, headers=headers)
+        if response.status_code == 200:
+            return JSONResponse(
+                content={"status": "success", "message": "Message sent. We will get back to you as soon as possible."})
+        else:
+            return JSONResponse(content={"status": "error", "message": "Failed to submit. Please try again later."})
+    except requests.exceptions.ConnectionError:
+        return JSONResponse(
+            content={"status": "error", "message": "Failed to connect. Please check your network connection."})
+    except requests.exceptions.Timeout:
+        return JSONResponse(content={"status": "error", "message": "Request timed out. Please try again later."})
+    except requests.exceptions.RequestException:
+        return JSONResponse(content={"status": "error", "message": "A request error occurred. Please try again."})
 
 
 @app.get("/", response_class=HTMLResponse)

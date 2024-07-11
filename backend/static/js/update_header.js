@@ -17,6 +17,7 @@ async function updateHeader() {
                         <li><a href="/">Home</a></li>
                         <li><a href="#" id="myDataLink">My Data</a></li>
                         <li><a href="/disclaimer">Disclaimer</a></li>
+                        <li><a href="/contact">Contact</a></li>
                         <li><a href="#" onclick="logout()">Logout</a></li>
                     `;
                     setupMyDataLink(data.username);
@@ -51,6 +52,7 @@ function setDefaultHeader() {
         <li><a href="/login">Login</a></li>
         <li><a href="/signup">Sign up</a></li>
         <li><a href="/disclaimer">Disclaimer</a></li>
+        <li><a href="/contact">Contact</a></li>
     `;
 }
 

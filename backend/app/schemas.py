@@ -102,3 +102,8 @@ class UserUpdate(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+
+class ContactForm(BaseModel):
+    email: Optional[str] = None
+    message: Optional[str] = None
