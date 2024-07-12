@@ -43,7 +43,7 @@ Thumbs.db
 
 # Python VENV
 /Venv
-
+/venv
 #Models
 *.pt
 
@@ -60,3 +60,6 @@ Thumbs.db
 /.ruff_cache/
 .vscode/settings.json
 /.env
+
+# Uvicorn
+nohup.out
