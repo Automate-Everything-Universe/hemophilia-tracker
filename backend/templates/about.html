@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container mx-auto py-8 px-4">
+    <div class="bg-white shadow rounded-lg p-6">
+        <h2 class="text-2xl font-bold mb-4">About Hemophilia Tracker</h2>
+        <p class="text-gray-700 mb-4">
+            Hemophilia Tracker is designed to help individuals with hemophilia gain more insight regarding their
+            treatment.
+            <br>
+            By providing an easy-to-use interface, users can input their blood work data and visualize their current
+            factor level and also over the week.
+            <br>
+            <b> This is not a medical tool, please consult your doctor before making any decisions.</b>
+            <br>
+            <b>Read our <a href="/disclaimer"> disclaimer</a>.</b>
+        </p>
+        <h3 class="text-lg font-semibold mb-2">Purpose</h3>
+        <p class="text-gray-700 mb-4">
+            Our mission is to provide a free, reliable tool that supports hemophilia patients in understanding their
+            condition better, thereby improving their quality of life.
+            <br>
+            Hemophilia Tracker aims to bridge the gap between clinical treatment and day-to-day management.
+        </p>
+        <h3 class="text-lg font-semibold mb-2">How It Works</h3>
+        <ol class="list-decimal list-inside text-gray-700 mb-4">
+            <li>Input your peak factor level after an infusion.</li>
+            <li>Record the time of the infusion and the time of the subsequent blood sample draw.</li>
+            <li>Our tool calculates the decay constant and generates a plot showing the factor level over time.</li>
+        </ol>
+        <h3 class="text-lg font-semibold mb-2">Features</h3>
+        <ul class="list-disc list-inside text-gray-700 mb-4">
+            <li>Interactive Playground: Experiment with predefined values to see how factor levels change over time.
+            </li>
+            <li>Custom Measurements: Register and for a customized analysis and monitoring.</li>
+            <li>Real-Time Plots: Visualize your factor levels and their decay in real-time in your users area.</li>
+            <li>User-Friendly Interface: Easy to navigate and input your data.</li>
+        </ul>
+        <h3 class="text-lg font-semibold mb-2">Benefits</h3>
+        <p class="text-gray-700 mb-4">
+            By using Hemophilia Tracker, you can:
+        </p>
+        <ul class="list-disc list-inside text-gray-700 mb-4">
+            <li>Understand the efficacy of your treatment better.</li>
+            <li>Make informed decisions about your health and treatment plan.</li>
+            <li>Track your condition more accurately and consistently.</li>
+        </ul>
+        <p class="text-gray-700 mb-4">
+            We hope that Hemophilia Tracker will become a valuable tool in your health management toolkit, providing you
+            with insights and confidence in managing hemophilia.
+        </p>
+    </div>
+</div>
+{% endblock %}

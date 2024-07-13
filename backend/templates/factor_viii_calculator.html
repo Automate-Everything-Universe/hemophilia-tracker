@@ -1,0 +1,32 @@
+<div class="space-y-4">
+    <br>
+    <h2 class="text-lg font-semibold mb-2">Factor VIII Peak Level Calculator</h2>
+    <div class="p-4 shadow rounded bg-white">
+        <form id="calculatorForm">
+            <div class="mb-4">
+                <label for="dosage" class="block text-sm font-medium text-gray-700">Factor VIII Dosage Taken
+                    [UI]</label>
+                <input type="number" id="dosage" name="dosage" value="500" required
+                       class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded inline-flex items-center">
+            </div>
+            <div class="mb-4">
+                <label for="weight" class="block text-sm font-medium text-gray-700">Weight [Kg]</label>
+                <input type="number" id="weight" name="weight" value="10" required
+                       class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded inline-flex items-center">
+            </div>
+            <div class="mb-4">
+                <label for="weight" class="block text-sm font-medium text-gray-700">Peak Factor VIII Level [%]:</label>
+                <input type="number" id="resultValue" name="weight"
+                       class="bg-blue-100 text-blue-800 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded inline-flex items-center">
+                            <br>
+                            <br>
+                <button type="button" onclick="calculatePeakLevel()"
+                        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-2 rounded shadow">Calculate
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script src="/static/js/factor_viii_calculator.js"></script>
