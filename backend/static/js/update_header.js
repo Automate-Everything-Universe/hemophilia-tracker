@@ -15,6 +15,7 @@ async function updateHeader() {
                 if (data.valid && data.username) {
                     nav.innerHTML = `
                         <li><a href="/">Home</a></li>
+                        <li><a href="/about">About</a></li>
                         <li><a href="#" id="myDataLink">My Data</a></li>
                         <li><a href="/disclaimer">Disclaimer</a></li>
                         <li><a href="/contact">Contact</a></li>
@@ -49,6 +50,7 @@ function setDefaultHeader() {
     const nav = document.querySelector('nav ul');
     nav.innerHTML = `
         <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
         <li><a href="/login">Login</a></li>
         <li><a href="/signup">Sign up</a></li>
         <li><a href="/disclaimer">Disclaimer</a></li>
